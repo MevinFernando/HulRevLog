@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const RetailerSchema = new Schema({
-  id: {
+  _id: {
     type: String,
     required: true
   },
