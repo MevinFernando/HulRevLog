@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const retailers = require("./routes/api/retailers");
+const barcodes = require("./routes/api/barcodes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ mongoose
   .catch(err => console.log(err));
 
 app.use("/api/retailers", retailers);
+app.use("/api/barcodes", barcodes);
 
 app.get("/", (req, res) => {
   res.send("HOME PAGE");

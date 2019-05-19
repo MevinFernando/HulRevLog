@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   //console.log(req.body);
   const newRetailer = new Retailer({
-    _id: req.body.id,
+    id: req.body.id,
     name: req.body.name
   });
 
@@ -35,18 +35,6 @@ router.post("/", (req, res) => {
 // @desc    Delete A Retailer
 // @access  Public
 router.delete("/:id", (req, res) => {
-  res.send(`DELETE ${req.params.id}`);
-  // Retailer.find({ id: req.params.id })
-  //   .then(retailer =>
-  //     retailer
-  //       .remove()
-  //       .then(() => res.json({ success: true }))
-  //       .catch(err => console.log(err))
-  //   )
-  //   .catch(err => {
-  //     res.status(404).json({ success: false });
-  //   });
-
   Retailer.findById(req.params.id)
     .remove()
     .exec();
