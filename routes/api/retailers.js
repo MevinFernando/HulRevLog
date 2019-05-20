@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 
 router.get("/:retailerId", (req, res) => {
   //res.send("Retailer API");
-  Retailer.find({ retailerId: req.params.retailerId })
+  Retailer.find({ id: req.params.retailerId })
     .then(retailers => res.json(retailers))
     .catch(err => {
       console.log(err);
