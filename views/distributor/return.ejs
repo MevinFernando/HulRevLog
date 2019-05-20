@@ -1,13 +1,10 @@
 <% include ../partials/header %>
 
-<p><%= ret %></p>
-
-<!-- 
 <div class="container ">
   <p>Retailer Name:</p>
-  <h3><%=ret.retailerName%></h3>
+  <h3><%=result.retailerName%></h3>
   <p>Return Date:</p>
-  <p><%=ret.returnDate%></p>
+  <p><%=result.returnDate%></p>
   <h3>Items List</h3>
   <table class="table table-hover  ">
     <thead>
@@ -20,7 +17,7 @@
       </tr>
     </thead>
     <tbody>
-      <% ret.items.forEach((item)=> {%>
+      <% items.forEach((item)=> {%>
       <tr>
         <td><%=item.name%></td>
         <td><%=item.mrp%></td>
@@ -31,9 +28,32 @@
       </tr>
       <% })%>
     </tbody>
-
-    <h3><%=ret.status %></h3>
   </table>
-</div> -->
+
+  <h3>Status Of Return</h3>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% status.forEach((st)=> {%>
+      <tr>
+        <td><%=st.description%></td>
+        <td><%=st.time%></td>
+        <td></td>
+      </tr>
+      <% })%>
+    </tbody>
+  </table>
+
+  <button
+    onClick="window.location.href='/distributor/returns/<%=result.returnId%>/confirm'"
+  >
+    Confirm
+  </button>
+</div>
 
 <% include ../partials/footer %>

@@ -16,7 +16,7 @@ const ReturnSchema = new Schema({
     type: ["Mixed"]
   },
   status: {
-    type: "String"
+    type: ["Mixed"]
   },
   amount: {
     type: Number
