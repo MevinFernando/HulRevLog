@@ -4,10 +4,16 @@ const bodyParser = require("body-parser");
 
 const retailers = require("./routes/api/retailers");
 const barcodes = require("./routes/api/barcodes");
+const returns = require("./routes/api/returns");
+
+const distributor = require("./routes/distributor");
 
 const app = express();
 
 app.use(bodyParser.json());
+
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
 const db = require("./config/keys").mongoURI;
 
@@ -18,6 +24,9 @@ mongoose
 
 app.use("/api/retailers", retailers);
 app.use("/api/barcodes", barcodes);
+app.use("/api/returns", returns);
+
+app.use("/distributor", distributor);
 
 app.get("/", (req, res) => {
   res.send("HOME PAGE");

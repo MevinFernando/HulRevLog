@@ -1,0 +1,39 @@
+<% include ../partials/header %>
+
+<p><%= ret %></p>
+
+<!-- 
+<div class="container ">
+  <p>Retailer Name:</p>
+  <h3><%=ret.retailerName%></h3>
+  <p>Return Date:</p>
+  <p><%=ret.returnDate%></p>
+  <h3>Items List</h3>
+  <table class="table table-hover  ">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>MRP</th>
+        <th>PKD</th>
+        <th>QTY</th>
+        <th>Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% ret.items.forEach((item)=> {%>
+      <tr>
+        <td><%=item.name%></td>
+        <td><%=item.mrp%></td>
+        <td><%=item.pkd%></td>
+        <td><%=item.qty%></td>
+        <td><%=item.reason%></td>
+        <td></td>
+      </tr>
+      <% })%>
+    </tbody>
+
+    <h3><%=ret.status %></h3>
+  </table>
+</div> -->
+
+<% include ../partials/footer %>

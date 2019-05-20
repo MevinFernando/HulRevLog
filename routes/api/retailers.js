@@ -15,6 +15,15 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:retailerId", (req, res) => {
+  //res.send("Retailer API");
+  Retailer.find({ retailerId: req.params.retailerId })
+    .then(retailers => res.json(retailers))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // @route   POST api/retailers
 // @desc    Create An Retailers
 // @access  Public

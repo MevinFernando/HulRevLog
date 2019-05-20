@@ -1,0 +1,42 @@
+<% include ../partials/header %>
+
+<div class="container">
+  <div class="row">
+  <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>Returns</h4>
+      </div>
+      <table class="table table-hover table-fixed" >
+              <thead>
+                <tr>
+                  <th>Retailer Id</th>
+                  <th>Return Date</th>
+                  <th>Status</th>
+                  
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% returns.forEach((ret)=> {%>
+                <tr>
+                  <td><%=ret.returnId%></td>
+                  <td><%=ret.returnDate%></td>
+                  <td><%=ret.status%></button></td>
+                  <td><button onclick="window.location.href='/distributor/returns/<%=ret.returnId%>'">View</button></td>
+                  <td></td>
+                </tr>
+                <% })%>
+              </tbody>
+            </table>
+            </div>
+            </div>
+          </div>
+</div>
+
+<script>
+
+</script>
+
+
+
+<% include ../partials/footer %>

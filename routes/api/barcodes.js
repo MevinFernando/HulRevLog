@@ -3,23 +3,13 @@ const router = express.Router();
 
 const Barcode = require("../../models/barcode.js");
 
-// @route   GET api/barcodes
-// @desc    Get All Barcodes
+// @route   GET api/barcodes?barcode=.....
+// @desc    Get particular product for Barcode
 // @access  Public
 router.get("/", (req, res) => {
-  Barcode.find({})
+  //res.send(req.query);
+  Barcode.find({ barcode: req.query.barcode })
     .then(barcodes => res.json(barcodes))
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-// @route   GET api/barcodes
-// @desc    Get Prodcut Details
-// @access  Public
-router.get("/:barcode", (req, res) => {
-  Barcode.find({ barcode: req.params.barcode })
-    .then(result => res.json(result))
     .catch(err => {
       console.log(err);
     });
@@ -32,7 +22,8 @@ router.post("/", (req, res) => {
   const newBarcode = new Barcode({
     barcode: req.body.barcode,
     productName: req.body.productName,
-    productId: req.body.productId
+    productId: req.body.productId,
+    category: req.body.category
   });
 
   newBarcode
@@ -44,8 +35,8 @@ router.post("/", (req, res) => {
 // @route   DELETE api/retailers/:id
 // @desc    Delete A Retailer
 // @access  Public
-router.delete("/:barcode", (req, res) => {
-  Barcode.findById(req.params.barcode)
+router.delete("/", (req, res) => {
+  Barcode.findById(req.query.barcode)
     .remove()
     .exec();
 });

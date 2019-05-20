@@ -14,6 +14,10 @@ const BarcodeSchema = new Schema({
   productId: {
     type: String,
     required: true
+  },
+  category: {
+    type: String,
+    required: true
   }
 });
 
