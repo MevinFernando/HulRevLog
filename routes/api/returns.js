@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 // @access  Public
 router.get("/:returnId", (req, res) => {
   Return.find({ returnId: req.params.returnId })
-    .then(result => res.json(result))
+    .then(result => res.json(JSON.stringify(JSON.parse(result))))
     .catch(err => console.log(err));
 });
 
@@ -28,7 +28,7 @@ router.post("/", (req, res) => {
   //console.log(req.body);
   // const newReturn = new Return({
   //   returnId: "123456",
-  //   returnDate: "1529644667834",
+  //   returnDate: "",
   //   retailerId: "123456",
   //   retailerName: "raj stores",
   //   items: [
@@ -49,15 +49,16 @@ router.post("/", (req, res) => {
   //   ],
   //   status: "requested"
   // });
+  console.log(req.body);
+  const newReturn = new Return(req.body);
+  // Return.insert(newReturn, (err, result) => {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log(result);
+  //   }
+  // });
 
-  const newReturn = new Return({
-    returnId: req.body.returnId,
-    returnDate: req.body.returnDate,
-    retailerId: req.body.retailerId,
-    retailerName: req.body.retailerName,
-    items: req.body.items,
-    status: req.body.status
-  });
   newReturn
     .save()
     .then(result => res.json(result))

@@ -28,7 +28,7 @@ router.get("/returns/:returnId/confirm", (req, res) => {
   //console.log(req.params.returnId);
   const stat = {
     description: "Scheduled for pickup",
-    time: Date.now().toString()
+    time: Date()
   };
   Return.update(
     { returnId: req.params.returnId },

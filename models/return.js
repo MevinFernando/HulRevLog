@@ -5,7 +5,10 @@ const ReturnSchema = new Schema({
   returnId: {
     type: "String"
   },
-  returnDate: { type: Date, default: Date.now },
+  returnDate: {
+    type: "String",
+    default: Date()
+  },
   retailerId: {
     type: "String"
   },
@@ -19,7 +22,16 @@ const ReturnSchema = new Schema({
     type: ["Mixed"]
   },
   amount: {
-    type: Number
+    type: "String"
+  },
+  salesmanId: {
+    type: "String"
+  },
+  salesmanName: {
+    type: "String"
+  },
+  category: {
+    type: "String"
   }
 });
 module.exports = Return = mongoose.model("return", ReturnSchema);
