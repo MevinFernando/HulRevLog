@@ -16,9 +16,12 @@ router.get("/", (req, res) => {
 // @desc    Get Return details for returnId
 router.get("/:returnId", (req, res) => {
   Return.find({ returnId: req.params.returnId })
-    .then(result => res.json(JSON.stringify(JSON.parse(result))))
+    .then(result => res.json(result))
     .catch(err => console.log(err));
 });
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 // @route   POST api/returns
 // @desc    Create A Return  { req.body JSON object should match perfectly}
@@ -30,6 +33,9 @@ router.post("/", (req, res) => {
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 //@route PUT
 //@desc update  return details for a returnId except status ans items list
@@ -60,6 +66,9 @@ router.put("/:returnId/item/:name", (req, res) => {
 // @desc update status details of a particular returnId
 router.put("/:returnId/status/", (req, res) => {
   //console.log(req.params.returnId);
+
+  if (req.body.code == "30") {
+  }
   Return.update(
     { returnId: req.params.returnId },
     {
@@ -76,6 +85,9 @@ router.put("/:returnId/status/", (req, res) => {
     })
     .catch(err => console.log(err));
 });
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 // @route   DELETE
 // @desc    Delete A Status item from array

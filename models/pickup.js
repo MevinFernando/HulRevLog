@@ -11,6 +11,10 @@ const PickupSchema = new Schema({
     type: String,
     required: true
   },
+  retailerId: {
+    type: String,
+    required: true
+  },
   pickupDate: {
     type: String,
     required: true,
