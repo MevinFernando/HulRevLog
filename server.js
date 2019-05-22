@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const retailers = require("./routes/api/retailers");
 const barcodes = require("./routes/api/barcodes");
 const returns = require("./routes/api/returns");
+const pickups = require("./routes/api/pickups");
+const deliveryPersons = require("./routes/api/deliveryPersons");
 
 const distributor = require("./routes/distributor");
 
@@ -25,6 +27,8 @@ mongoose
 app.use("/api/retailers", retailers);
 app.use("/api/barcodes", barcodes);
 app.use("/api/returns", returns);
+app.use("/api/pickups", pickups);
+app.use("/api/deliveryPersons", deliveryPersons);
 
 app.use("/distributor", distributor);
 

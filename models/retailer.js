@@ -13,4 +13,4 @@ const RetailerSchema = new Schema({
   }
 });
 
-module.exports = Item = mongoose.model("retailer", RetailerSchema);
+module.exports = Retailer = mongoose.model("retailer", RetailerSchema);

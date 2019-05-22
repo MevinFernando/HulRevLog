@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 
 // @route   POST api/barcodes
 // @desc    Create An barcode
-// @access  Public
+
 router.post("/", (req, res) => {
   const newBarcode = new Barcode({
     barcode: req.body.barcode,
@@ -34,7 +34,6 @@ router.post("/", (req, res) => {
 
 // @route   DELETE api/retailers/:id
 // @desc    Delete A Retailer
-// @access  Public
 router.delete("/", (req, res) => {
   Barcode.findById(req.query.barcode)
     .remove()

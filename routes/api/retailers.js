@@ -16,7 +16,6 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:retailerId", (req, res) => {
-  //res.send("Retailer API");
   Retailer.find({ id: req.params.retailerId })
     .then(retailers => res.json(retailers))
     .catch(err => {
@@ -26,7 +25,6 @@ router.get("/:retailerId", (req, res) => {
 
 // @route   POST api/retailers
 // @desc    Create An Retailers
-// @access  Public
 router.post("/", (req, res) => {
   //console.log(req.body);
   const newRetailer = new Retailer({
@@ -42,7 +40,6 @@ router.post("/", (req, res) => {
 
 // @route   DELETE api/retailers/:id
 // @desc    Delete A Retailer
-// @access  Public
 router.delete("/:id", (req, res) => {
   Retailer.findById(req.params.id)
     .remove()

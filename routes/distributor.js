@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Return = require("../models/return.js");
 
+// @route GET All returns
 router.get("/", (req, res) => {
   Return.find()
     .then(returns => res.render("distributor/returns", { returns: returns }))
@@ -45,7 +46,7 @@ router.get("/returns/:returnId/confirm", (req, res) => {
       console.log(result);
       res.redirect("/distributor");
     })
-    .catch(err => console.log(result));
+    .catch(err => console.log(err));
 });
 
 module.exports = router;
