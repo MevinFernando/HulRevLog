@@ -7,6 +7,7 @@ const barcodes = require("./routes/api/barcodes");
 const returns = require("./routes/api/returns");
 const pickups = require("./routes/api/pickups");
 const deliveryPersons = require("./routes/api/deliveryPersons");
+const salesPersons = require("./routes/api/salesPersons");
 
 const distributor = require("./routes/distributor");
 
@@ -29,6 +30,7 @@ app.use("/api/barcodes", barcodes);
 app.use("/api/returns", returns);
 app.use("/api/pickups", pickups);
 app.use("/api/deliveryPersons", deliveryPersons);
+app.use("/api/salesPersons", salesPersons);
 
 app.use("/distributor", distributor);
 

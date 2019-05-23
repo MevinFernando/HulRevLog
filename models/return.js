@@ -24,10 +24,10 @@ const ReturnSchema = new Schema({
   amount: {
     type: "String"
   },
-  salesmanId: {
+  salesPersonId: {
     type: "String"
   },
-  salesmanName: {
+  salesPersonName: {
     type: "String"
   },
   category: {

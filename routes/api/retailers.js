@@ -27,10 +27,12 @@ router.get("/:retailerId", (req, res) => {
 // @desc    Create An Retailers
 router.post("/", (req, res) => {
   //console.log(req.body);
-  const newRetailer = new Retailer({
-    id: req.body.id,
-    name: req.body.name
-  });
+  // const newRetailer = new Retailer({
+  //   id: req.body.id,
+  //   name: req.body.name
+  // });
+
+  const newRetailer = new Retailer(req.body);
 
   newRetailer
     .save()

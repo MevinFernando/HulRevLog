@@ -10,6 +10,22 @@ const RetailerSchema = new Schema({
   name: {
     type: String,
     required: true
+  },
+  latitude: {
+    type: String,
+    required: true
+  },
+  longitude: {
+    type: String,
+    required: true
+  },
+  category: {
+    type: String,
+    required: true
+  },
+  salesPersonId: {
+    type: String,
+    required: true
   }
 });
 
