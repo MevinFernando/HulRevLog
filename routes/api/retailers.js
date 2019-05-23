@@ -23,6 +23,14 @@ router.get("/:retailerId", (req, res) => {
     });
 });
 
+router.get("/:salesPersonId", (req, res) => {
+  Retailer.find({ salesPersonId: req.params.salesPersonId })
+    .then(retailers => res.json(retailers))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // @route   POST api/retailers
 // @desc    Create An Retailers
 router.post("/", (req, res) => {
