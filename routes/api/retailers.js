@@ -15,13 +15,13 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:retailerId", (req, res) => {
-  Retailer.find({ id: req.params.retailerId })
-    .then(retailers => res.json(retailers))
-    .catch(err => {
-      console.log(err);
-    });
-});
+// router.get("/:retailerId", (req, res) => {
+//   Retailer.find({ id: req.params.retailerId })
+//     .then(retailers => res.json(retailers))
+//     .catch(err => {
+//       console.log(err);
+//     });
+// });
 
 router.get("/:salesPersonId", (req, res) => {
   Retailer.find({ salesPersonId: req.params.salesPersonId })
