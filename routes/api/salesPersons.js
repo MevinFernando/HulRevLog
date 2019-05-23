@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get("retailers/:salesPersonId/", (req, res) => {
+router.get("/retailers/:salesPersonId", (req, res) => {
   Retailer.find({ salesPersonId: req.params.salesPersonId })
     .then(retailers => res.json(retailers))
     .catch(err => {
