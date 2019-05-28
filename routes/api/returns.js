@@ -23,7 +23,7 @@ router.get("/:returnId", (req, res) => {
 
 // @route   GET api/returns/retailer/:retailerId
 // @desc    Get Return details for retailerId
-router.get("retailer/:retailerId", (req, res) => {
+router.get("/retailer/:retailerId", (req, res) => {
   Return.find({ retailerId: req.params.retailerId })
     .then(result => res.json(result))
     .catch(err => console.log(err));
