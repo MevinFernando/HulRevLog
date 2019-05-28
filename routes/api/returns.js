@@ -21,6 +21,14 @@ router.get("/:returnId", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   GET api/returns/retailer/:retailerId
+// @desc    Get Return details for retailerId
+router.get("retailer/:retailerId", (req, res) => {
+  Return.find({ retailerId: req.params.retailerId })
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
@@ -75,14 +83,14 @@ router.put("/:returnId/status", (req, res) => {
     var newStatus = {
       code: "15",
       description: "scheduled for pickup",
-      time: d
+      time: Date(d.toString())
     };
     console.log(newStatus);
   } else if (req.body.code == "30") {
     var newStatus = {
       code: "30",
       description: "Reached RS",
-      time: d
+      time: Date(d.toString())
     };
   } else {
     console.log(newStatus);
