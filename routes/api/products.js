@@ -15,6 +15,18 @@ router.get("/:barcode", (req, res) => {
     });
 });
 
+// @route   GET api/category/:barcode.....
+// @desc    Get products of a category
+// @access  Public
+router.get("/category/:id", (req, res) => {
+  //res.send(req.query);
+  Product.find({ category: req.params.id })
+    .then(result => res.json(result))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // @route   POST api/products
 // @desc    Create An products
 
