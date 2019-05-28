@@ -32,6 +32,7 @@ router.post("/", (req, res) => {
   newReturn
     .save()
     .then(result => res.json(result))
+
     .catch(err => console.log(err));
 });
 
@@ -65,17 +66,39 @@ router.put("/:returnId/item/:name", (req, res) => {
 });
 
 // @desc update status details of a particular returnId
-router.put("/:returnId/status/", (req, res) => {
-  //console.log(req.params.returnId);
+router.put("/:returnId/status", (req, res) => {
+  console.log(req.body.code);
 
-  if (req.body.code == "30") {
+  if (req.body.code == "15") {
+    var d = new Date();
+    d.setDate(d.getDate() + 2);
+    var newStatus = {
+      code: "15",
+      description: "scheduled for pickup",
+      time: d
+    };
+    console.log(newStatus);
+  } else if (req.body.code == "30") {
+    var newStatus = {
+      code: "30",
+      description: "Reached RS",
+      time: d
+    };
+  } else {
+    console.log(newStatus);
+    console.log("hit else");
+    res.status(500).send({
+      error: "No matching Status"
+    });
+    return;
   }
+
   Return.update(
     { returnId: req.params.returnId },
     {
       $push: {
         status: {
-          $each: [req.body],
+          $each: [newStatus],
           $position: 0
         }
       }

@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ItemSchema = new Schema({
+const ReturnStockSchema = new Schema({
+  id: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -19,14 +23,24 @@ const ItemSchema = new Schema({
   },
   qty: {
     type: String,
-    required: true,
     default: "1"
   },
   reason: {
     type: String,
     required: true,
     default: "others"
+  },
+  tur: {
+    type: String,
+    default: "others"
+  },
+  weight: {
+    type: String,
+    required: true
   }
 });
 
-module.exports = Item = mongoose.model("item", ItemSchema);
+module.exports = returnStock = mongoose.model(
+  "returnstocks",
+  ReturnStockSchema
+);

@@ -9,22 +9,7 @@ const Retailer = require("../../models/retailer.js");
 router.get("/", (req, res) => {
   //res.send("Retailer API");
   Retailer.find()
-    .then(retailers => res.json(retailers))
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-// router.get("/:retailerId", (req, res) => {
-//   Retailer.find({ id: req.params.retailerId })
-//     .then(retailers => res.json(retailers))
-//     .catch(err => {
-//       console.log(err);
-//     });
-// });
-
-router.get("/:salesPersonId", (req, res) => {
-  Retailer.find({ salesPersonId: req.params.salesPersonId })
+    //  .select("id name category")
     .then(retailers => res.json(retailers))
     .catch(err => {
       console.log(err);
@@ -46,6 +31,28 @@ router.post("/", (req, res) => {
     .save()
     .then(item => res.json(item))
     .catch(err => console.log(err));
+});
+
+router.patch("/:id", (req, res) => {
+  const id = req.params.id;
+
+  // const updateOps = {};
+  // console.log(req.body);
+  // for (const ops of req.body) {
+  //   updateOps[ops.propName] = ops.value;
+  // }
+  Retailer.update({ id: req.params.id }, req.body)
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 // @route   DELETE api/retailers/:id

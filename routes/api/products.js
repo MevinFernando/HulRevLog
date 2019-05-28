@@ -1,0 +1,42 @@
+const express = require("express");
+const router = express.Router();
+
+const Product = require("../../models/product.js");
+
+// @route   GET api/products/:barcode.....
+// @desc    Get particular product for Barcode
+// @access  Public
+router.get("/:barcode", (req, res) => {
+  //res.send(req.query);
+  Product.find({ barcode: req.params.barcode })
+    .then(barcodes => res.json(barcodes))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+// @route   POST api/products
+// @desc    Create An products
+
+router.post("/", (req, res) => {
+  // const newBarcode = new Barcode({
+  //   barcode: req.body.barcode,
+  //   productName: req.body.productName,
+  //   productId: req.body.productId,
+  //   category: req.body.category,
+  // });
+
+  Product.save()
+    .then(barcode => res.json(req.body))
+    .catch(err => console.log(err));
+});
+
+// @route   DELETE api/products/:barcode
+// @desc    Delete A Retailer
+router.delete("/", (req, res) => {
+  Product.find({ barcode: req.query.barcode })
+    .remove()
+    .exec();
+});
+
+module.exports = router;
