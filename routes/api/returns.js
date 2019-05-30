@@ -76,9 +76,8 @@ router.put("/:returnId/item/:name", (req, res) => {
 // @desc update status details of a particular returnId
 router.put("/:returnId/status", (req, res) => {
   console.log(req.body.code);
-
+  var d = new Date();
   if (req.body.code == "15") {
-    var d = new Date();
     d.setDate(d.getDate() + 2);
     var newStatus = {
       code: "15",
@@ -86,10 +85,16 @@ router.put("/:returnId/status", (req, res) => {
       time: Date(d.toString())
     };
     console.log(newStatus);
+  } else if (req.body.code == "20") {
+    var newStatus = {
+      code: "20",
+      description: "picked up",
+      time: Date(d.toString())
+    };
   } else if (req.body.code == "30") {
     var newStatus = {
       code: "30",
-      description: "Reached RS",
+      description: "reached RS",
       time: Date(d.toString())
     };
   } else {

@@ -31,15 +31,11 @@ router.get("/category/:id", (req, res) => {
 // @desc    Create An products
 
 router.post("/", (req, res) => {
-  // const newBarcode = new Barcode({
-  //   barcode: req.body.barcode,
-  //   productName: req.body.productName,
-  //   productId: req.body.productId,
-  //   category: req.body.category,
-  // });
+  const newProduct = new Product(req.body);
 
-  Product.save()
-    .then(barcode => res.json(req.body))
+  newProduct
+    .save()
+    .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 

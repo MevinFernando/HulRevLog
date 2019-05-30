@@ -1,7 +1,10 @@
+global.__basedir = __dirname;
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+//const cors = require('cors');
 
 const retailers = require("./routes/api/retailers");
 const products = require("./routes/api/products");
@@ -11,8 +14,11 @@ const deliveryPersons = require("./routes/api/deliveryPersons");
 const salesPersons = require("./routes/api/salesPersons");
 const distributor = require("./routes/distributor");
 const returnStocks = require("./routes/api/returnStocks");
+const distributors = require("./routes/api/distributors");
 
 const app = express();
+
+//app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -47,7 +53,7 @@ app.use("/api/pickups", pickups);
 app.use("/api/deliveryPersons", deliveryPersons);
 app.use("/api/salesPersons", salesPersons);
 app.use("/api/returnStocks", returnStocks);
-
+app.use("/api/distributors", distributors);
 app.use("/distributor", distributor);
 
 app.use((req, res, next) => {
