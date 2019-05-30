@@ -3,6 +3,7 @@ const router = express.Router();
 var xml = require("xml");
 
 const Return = require("../../models/return.js");
+const Pickup = require("../../models/pickup.js");
 
 // @route   GET api/returns
 // @desc    Get  All Returns
@@ -85,6 +86,18 @@ router.put("/:returnId/status", (req, res) => {
       time: Date(d.toString())
     };
     console.log(newStatus);
+    Return.findOne({ returnId: req.params.returnId }).then(result => {
+      const newPickup = new Pickup({
+        returnId: req.params.returnId,
+        pickupId: "1",
+        retailerId: result.retailerId,
+        date: Date(d.toString())
+      });
+      newPickup
+        .save()
+        .then(pickup => console.log(pickup))
+        .catch(err => console.log(err));
+    });
   } else if (req.body.code == "20") {
     var newStatus = {
       code: "20",
@@ -95,6 +108,15 @@ router.put("/:returnId/status", (req, res) => {
     var newStatus = {
       code: "30",
       description: "reached RS",
+      time: Date(d.toString())
+    };
+    Pickup.findOneAndDelete({ returnId: req.params.returnId })
+      .then(res.json({ success: true }))
+      .catch(err => res.status(404).json({ success: false }));
+  } else if (req.body.code == "40") {
+    var newStatus = {
+      code: "40",
+      description: "audited at RS",
       time: Date(d.toString())
     };
   } else {

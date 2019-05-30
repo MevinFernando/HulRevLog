@@ -6,6 +6,18 @@ const Product = require("../../models/product.js");
 // @route   GET api/products/:barcode.....
 // @desc    Get particular product for Barcode
 // @access  Public
+router.get("/", (req, res) => {
+  //res.send(req.query);
+  Product.find()
+    .then(products => res.json(products))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+// @route   GET api/products/:barcode.....
+// @desc    Get particular product for Barcode
+// @access  Public
 router.get("/:barcode", (req, res) => {
   //res.send(req.query);
   Product.find({ barcode: req.params.barcode })
