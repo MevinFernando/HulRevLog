@@ -1,6 +1,38 @@
 const express = require("express");
 const router = express.Router();
 var xml = require("xml");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "./public/uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  // limits: {
+  //   fileSize: 1024 * 1024 * 5
+  // },
+  fileFilter: fileFilter
+});
+
+//const upload = multer({ dest: "uploads/" });
 
 const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
@@ -75,8 +107,9 @@ router.put("/:returnId/item/:name", (req, res) => {
 });
 
 // @desc update status details of a particular returnId
-router.put("/:returnId/status", (req, res) => {
+router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
   console.log(req.body.code);
+  console.log(req.file);
   var d = new Date();
   if (req.body.code == "15") {
     d.setDate(d.getDate() + 2);
@@ -102,7 +135,8 @@ router.put("/:returnId/status", (req, res) => {
     var newStatus = {
       code: "20",
       description: "picked up",
-      time: Date(d.toString())
+      time: Date(d.toString()),
+      signatureImage: req.file.path
     };
   } else if (req.body.code == "30") {
     var newStatus = {

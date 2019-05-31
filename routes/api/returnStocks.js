@@ -22,16 +22,18 @@ router.get("/", (req, res) => {
 // @desc    Create An returnStock
 router.post("/", (req, res) => {
   var item;
-  ReturnStock.findOne({
+  ReturnStock.find({
     id: req.body.id,
     pkd: req.body.pkd,
     mrp: req.body.mrp,
     reason: req.body.reason
   })
     .then(result => {
-      var newQty = +req.body.qty + +result.qty;
+      //console.log(result);
+      //var newQty = +req.body.qty + +result.qty;
       console.log(newQty);
-      if (result != null) {
+      if (result.length > 0) {
+        console.log(1);
         return ReturnStock.update({ id: result.id }, { qty: newQty }).exec();
         // .then(result => res.json(result))
         // .catch(err => {

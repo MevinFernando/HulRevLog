@@ -1,0 +1,53 @@
+<html></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <title>Document</title>
+  </head>
+  <style>
+    .linkstyle {
+      text-decoration: none;
+      color: #fff;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col">
+          <h3 class="text-center">Return Request</h3>
+          <p class="text-justify">
+            Hi, this is to notify about the return request raised by RS: ${rsId}
+            dated ${}. The return details can be viewed in the attached
+            pdf.Please confirm or reject the return using the buttons given
+            below.
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col  ">
+          <button class="btn btn-primary">
+            <a
+              class="linkstyle"
+              href="http://localhost:5000/api/distributors/return/123456/status/60"
+              >Accept</a
+            >
+          </button>
+          <button class="btn btn-danger">
+            <a
+              class="linkstyle"
+              href="http://localhost:5000/api/distributors/return/123456/status/61"
+              >Reject</a
+            >
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

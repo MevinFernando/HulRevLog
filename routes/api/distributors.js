@@ -71,12 +71,15 @@ router.post("/", (req, res) => {
 router.post("/return/new/:id", (req, res) => {
   var weight = 0;
   var value = 0;
+  var damagedValue = 0;
   var qty = 0;
   ReturnStock.find()
     .then(stocks => {
       for (var i = 0; i < stocks.length; i++) {
         weight = weight + stocks[i].qty * stocks[i].weight;
         value = value + stocks[i].qty * stocks[i].mrp;
+        if (stocks[i].reason === "damaged")
+          damagedValue = damagedValue + stocks[i].qty * stocks[i].mrp;
         qty = qty + stocks[i].qty * 1;
         //console.log(weight);
       }
@@ -86,6 +89,7 @@ router.post("/return/new/:id", (req, res) => {
         initDate: Date(),
         status: "50",
         value: value,
+        damagedValue: damagedValue,
         weight: weight,
         qty: qty,
         items: []
@@ -141,7 +145,7 @@ router.get("/return/:rsId/status/:id", (req, res) => {
     });
 });
 
-router.patch("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   const id = req.params.id;
   Distributor.update({ id: req.params.id }, req.body)
     .exec()

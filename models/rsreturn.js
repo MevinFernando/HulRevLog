@@ -27,6 +27,10 @@ const RSReturnSchema = new Schema({
     type: "String",
     required: true
   },
+  damagedValue: {
+    type: "String",
+    required: true
+  },
   weight: {
     type: "String",
     required: true
