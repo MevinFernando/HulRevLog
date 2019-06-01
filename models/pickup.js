@@ -17,8 +17,7 @@ const PickupSchema = new Schema({
   },
   pickupDate: {
     type: String,
-    required: true,
-    default: Date()
+    required: true
   }
 });
 

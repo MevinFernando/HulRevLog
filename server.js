@@ -12,7 +12,6 @@ const returns = require("./routes/api/returns");
 const pickups = require("./routes/api/pickups");
 const deliveryPersons = require("./routes/api/deliveryPersons");
 const salesPersons = require("./routes/api/salesPersons");
-const distributor = require("./routes/distributor");
 const returnStocks = require("./routes/api/returnStocks");
 const distributors = require("./routes/api/distributors");
 
@@ -54,7 +53,10 @@ app.use("/api/deliveryPersons", deliveryPersons);
 app.use("/api/salesPersons", salesPersons);
 app.use("/api/returnStocks", returnStocks);
 app.use("/api/distributors", distributors);
-app.use("/distributor", distributor);
+
+app.get("/", (req, res) => {
+  res.send("API HOME PAGE");
+});
 
 app.use((req, res, next) => {
   const error = new Error("Not Found");
@@ -69,10 +71,6 @@ app.use((error, req, res, next) => {
       message: error.message
     }
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("HOME PAGE");
 });
 
 const port = process.env.PORT || 5000;

@@ -36,6 +36,7 @@ const upload = multer({
 
 const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
+const Policy = require("../../models/policy.js");
 
 // @route   GET api/returns
 // @desc    Get  All Returns
@@ -58,6 +59,12 @@ router.get("/:returnId", (req, res) => {
 // @desc    Get Return details for retailerId
 router.get("/retailer/:retailerId", (req, res) => {
   Return.find({ retailerId: req.params.retailerId })
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+router.get("/policy", (req, res) => {
+  Policy.find()
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -110,72 +117,113 @@ router.put("/:returnId/item/:name", (req, res) => {
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
   console.log(req.body.code);
   console.log(req.file);
-  var d = new Date();
-  if (req.body.code == "15") {
-    d.setDate(d.getDate() + 2);
-    var newStatus = {
-      code: "15",
-      description: "scheduled for pickup",
-      time: Date(d.toString())
-    };
-    console.log(newStatus);
-    Return.findOne({ returnId: req.params.returnId }).then(result => {
-      const newPickup = new Pickup({
-        returnId: req.params.returnId,
-        pickupId: "1",
-        retailerId: result.retailerId,
-        date: Date(d.toString())
-      });
-      newPickup
-        .save()
-        .then(pickup => console.log(pickup))
-        .catch(err => console.log(err));
-    });
-  } else if (req.body.code == "20") {
-    var newStatus = {
-      code: "20",
-      description: "picked up",
-      time: Date(d.toString()),
-      signatureImage: req.file.path
-    };
-  } else if (req.body.code == "30") {
-    var newStatus = {
-      code: "30",
-      description: "reached RS",
-      time: Date(d.toString())
-    };
-    Pickup.findOneAndDelete({ returnId: req.params.returnId })
-      .then(res.json({ success: true }))
-      .catch(err => res.status(404).json({ success: false }));
-  } else if (req.body.code == "40") {
-    var newStatus = {
-      code: "40",
-      description: "audited at RS",
-      time: Date(d.toString())
-    };
-  } else {
-    console.log(newStatus);
-    console.log("hit else");
-    res.status(500).send({
-      error: "No matching Status"
-    });
-    return;
-  }
 
-  Return.update(
-    { returnId: req.params.returnId },
-    {
-      $push: {
-        status: {
-          $each: [newStatus],
-          $position: 0
+  var currentStatusCode = 0;
+  Return.findOne({ returnId: req.params.returnId })
+    .then(ret => {
+      //console.log(ret);
+      currentStatusCode = ret.status[0].code;
+
+      if (req.body.code - currentStatusCode != 10)
+        res.status(500).send({
+          error: "Wrong Status code Sent"
+        });
+      else {
+        //res.send("correct status update");
+        var d = Date();
+        if (req.body.code == "20") {
+          var newStatus = {
+            code: "20",
+            description: "scheduled for pickup",
+            time: d
+          };
+          d = new Date();
+          console.log(newStatus);
+          d.setDate(d.getDate() + 2);
+          console.log(d.toString());
+          d = d.toString();
+          Return.findOne({ returnId: req.params.returnId }).then(result => {
+            const newPickup = new Pickup({
+              returnId: req.params.returnId,
+              pickupId: "1",
+              retailerId: result.retailerId,
+              pickupDate: d
+            });
+            newPickup
+              .save()
+              .then(pickup => console.log(pickup))
+              .catch(err => console.log(err));
+          });
+        } else if (req.body.code == "30") {
+          if (req.file.path == null) {
+            console("no sign not found");
+            res.send("No sign Image sent");
+          } else {
+            console("no found");
+          }
+          var newStatus = {
+            code: "30",
+            description: "picked up",
+            time: d,
+            signatureImage: req.file.path
+          };
+        } else if (req.body.code == "40") {
+          var newStatus = {
+            code: "40",
+            description: "reached RS",
+            time: d
+          };
+          Pickup.findOneAndDelete({ returnId: req.params.returnId })
+            .then(console.log("successfully removed pickup"))
+            .catch(err => res.status(404).json({ success: false }));
+        } else if (req.body.code == "50") {
+          var newStatus = {
+            code: "50",
+            description: "audited at RS",
+            time: d
+          };
+          res.redirect("/api/returnStocks/hit", { items: req.body.items });
+        } else {
+          console.log(newStatus);
+          console.log("hit else");
+          res.status(500).send({
+            error: "No matching Status"
+          });
+          return;
         }
+
+        Return.update(
+          { returnId: req.params.returnId },
+          {
+            $push: {
+              status: {
+                $each: [newStatus],
+                $position: 0
+              }
+            }
+          }
+        )
+          .then(result => {
+            res.json({
+              message: "Status Updated",
+              result: result
+            });
+          })
+          .catch(err => console.log(err));
       }
-    }
-  )
-    .then(result => {
-      res.json(result);
     })
+    .catch(err =>
+      res.status(500).json({
+        error: err
+      })
+    );
+});
+
+router.post("/policy", (req, res) => {
+  const newPolicy = new Policy(req.body);
+  newPolicy
+    .save()
+    .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
