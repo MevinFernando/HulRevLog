@@ -25,11 +25,11 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: storage,
+  storage: storage
   // limits: {
   //   fileSize: 1024 * 1024 * 5
   // },
-  fileFilter: fileFilter
+  //fileFilter: fileFilter
 });
 
 //const upload = multer({ dest: "uploads/" });
@@ -155,13 +155,11 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
               .catch(err => console.log(err));
           });
         } else if (req.body.code == "30") {
-          console.log("hit 30");
-          // if (req.file.path == null) {
-          //   console("no sign not found");
-          //   res.send("No sign Image sent");
-          // } else {
-          //   console("no found");
-          // }
+          if (req.file == undefined) {
+            console.log("hit 30");
+            //  console("no sign not found");
+            res.send("No sign Image sent");
+          }
           var newStatus = {
             code: "30",
             description: "picked up",
