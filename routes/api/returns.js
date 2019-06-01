@@ -36,13 +36,19 @@ const upload = multer({
 
 const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
-const Policy = require("../../models/policy.js");
+const Rule = require("../../models/rule.js");
 
 // @route   GET api/returns
 // @desc    Get  All Returns
 // @access  Public
 router.get("/", (req, res) => {
   Return.find({})
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+router.get("/rules", (req, res) => {
+  Rule.find({})
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -59,12 +65,6 @@ router.get("/:returnId", (req, res) => {
 // @desc    Get Return details for retailerId
 router.get("/retailer/:retailerId", (req, res) => {
   Return.find({ retailerId: req.params.retailerId })
-    .then(result => res.json(result))
-    .catch(err => console.log(err));
-});
-
-router.get("/policy", (req, res) => {
-  Policy.find()
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -219,9 +219,9 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
     );
 });
 
-router.post("/policy", (req, res) => {
-  const newPolicy = new Policy(req.body);
-  newPolicy
+router.post("/rule", (req, res) => {
+  const newRule = new Rule(req.body);
+  newRule
     .save()
     .then(result => res.json(result))
     .catch(err => console.log(err));

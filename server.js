@@ -54,10 +54,6 @@ app.use("/api/salesPersons", salesPersons);
 app.use("/api/returnStocks", returnStocks);
 app.use("/api/distributors", distributors);
 
-app.get("/", (req, res) => {
-  res.send("API HOME PAGE");
-});
-
 app.use((req, res, next) => {
   const error = new Error("Not Found");
   error.status = 404;
@@ -71,6 +67,10 @@ app.use((error, req, res, next) => {
       message: error.message
     }
   });
+});
+
+app.get("/", (req, res) => {
+  res.send("API HOME PAGE");
 });
 
 const port = process.env.PORT || 5000;

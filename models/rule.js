@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const PolicySchema = new Schema({
+const RuleSchema = new Schema({
   ppDate: {
     type: String,
     required: true
@@ -17,4 +17,4 @@ const PolicySchema = new Schema({
   }
 });
 //always give collection name as plural in the below line else mongo will do some crazy stuff
-module.exports = Policy = mongoose.model("policies", PolicySchema);
+module.exports = Rule = mongoose.model("rules", RuleSchema);
