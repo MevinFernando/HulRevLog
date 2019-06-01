@@ -155,18 +155,20 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
               .catch(err => console.log(err));
           });
         } else if (req.body.code == "30") {
-          if (req.file.path == null) {
-            console("no sign not found");
-            res.send("No sign Image sent");
-          } else {
-            console("no found");
-          }
+          console.log("hit 30");
+          // if (req.file.path == null) {
+          //   console("no sign not found");
+          //   res.send("No sign Image sent");
+          // } else {
+          //   console("no found");
+          // }
           var newStatus = {
             code: "30",
             description: "picked up",
             time: d,
             signatureImage: req.file.path
           };
+          console.log(newStatus);
         } else if (req.body.code == "40") {
           var newStatus = {
             code: "40",
