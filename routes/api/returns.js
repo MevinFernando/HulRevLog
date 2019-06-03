@@ -90,16 +90,16 @@ router.post("/new", (req, res) => {
 
   var amount = 0;
   var returnObject = {
-    returnId: Math.floor(Math.random() * 1000000),
+    returnId: Math.floor(Math.random() * 1000000).toString(),
     returnDate: Date(),
-    retailerId: req.body.retailerId,
-    retailerName: req.body.retailerName,
+    retailerId: req.body.retailerId.toString(),
+    retailerName: req.body.retailerName.toString(),
     items: [],
     status: [],
     amount: 0,
-    salesPersonId: req.body.salesmanId,
-    salesPersonName: req.body.salesmanName,
-    packages: req.body.packages
+    salesPersonId: req.body.salesmanId.toString(),
+    salesPersonName: req.body.salesmanName.toString(),
+    packages: req.body.packages.toString()
   };
 
   for (var i = 0; i < req.body.items.length; i++) {
@@ -125,7 +125,7 @@ router.post("/new", (req, res) => {
       parseFloat(item.tur) * parseFloat(req.body.items[i].quantity);
     returnObject.items.push(item);
   }
-  returnObject.amount = amount;
+  returnObject.amount = amount.toString();
   var newStatus = {
     code: req.body.code.toString(),
     description: "return requested",
