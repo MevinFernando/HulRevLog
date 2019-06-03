@@ -21,13 +21,11 @@ router.get("/", (req, res) => {
 // @route   POST api/returnStocks
 // @desc    Create An returnStock
 router.post("/", (req, res) => {
-  var item;
   ReturnStock.find({
     id: req.body.id,
     pkd: req.body.pkd,
     mrp: req.body.mrp,
-    reason: req.body.reason,
-    category: req.body.category
+    reason: req.body.reason
   })
     .then(result => {
       console.log(result);
@@ -38,7 +36,7 @@ router.post("/", (req, res) => {
         console.log(newQty);
         return ReturnStock.update(
           { id: result[0].id, category: req.body.category },
-          { qty: newQty }
+          { qty: newQty.toString() }
         ).exec();
         // .then(result => res.json(result))
         // .catch(err => {
@@ -53,9 +51,56 @@ router.post("/", (req, res) => {
           mrp: req.body.mrp,
           reason: req.body.reason,
           qty: req.body.qty,
-          tur: parseFloat(req.body.mrp) * 0.8,
+          tur: (parseFloat(req.body.mrp) * 0.8).toString(),
           weight: req.body.weight,
-          category: req.body.category
+          category: req.body.category,
+          type: "trade"
+        };
+        const newReturnStock = new ReturnStock(returnStock);
+        return newReturnStock.save().then(result => {
+          res.json(result);
+        });
+        //.catch(err => res.json(err));
+      }
+    })
+    .then(result => res.json(result))
+    .catch(err => {
+      res.send(err);
+    });
+});
+
+// @route   POST api/returnStocks
+// @desc    Create An returnStock
+router.post("/new", (req, res) => {
+  ReturnStock.find({
+    id: req.body.id,
+    pkd: req.body.pkd,
+    mrp: req.body.mrp,
+    reason: req.body.reason
+  })
+    .then(result => {
+      console.log(result);
+      if (result.length == 1) {
+        console.log(1);
+        var newQty = parseInt(req.body.qty) + parseInt(result[0].qty);
+        console.log(newQty);
+        return ReturnStock.update(
+          { id: result[0].id, category: req.body.category },
+          { qty: newQty.toString() }
+        ).exec();
+      } else {
+        console.log(2);
+        const returnStock = {
+          id: req.body.id,
+          name: req.body.name,
+          pkd: req.body.pkd,
+          mrp: req.body.mrp,
+          reason: req.body.reason,
+          qty: req.body.qty,
+          tur: (parseFloat(req.body.mrp) * 0.8).toString(),
+          weight: req.body.weight,
+          category: req.body.category,
+          type: "trade"
         };
         const newReturnStock = new ReturnStock(returnStock);
         return newReturnStock.save().then(result => {

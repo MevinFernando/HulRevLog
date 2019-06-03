@@ -57,6 +57,11 @@ const ReturnStockSchema = new Schema({
   tot_amt: {
     type: String,
     default: "NA"
+  },
+  type: {
+    type: String,
+    default: "trade",
+    required: true
   }
 });
 

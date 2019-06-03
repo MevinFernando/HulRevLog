@@ -38,6 +38,7 @@ const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
 const Rule = require("../../models/rule.js");
 const Product = require("../../models/product.js");
+const ReturnStock = require("../../models/returnStock.js");
 
 // @route   GET api/returns
 // @desc    Get  All Returns
@@ -185,6 +186,55 @@ router.delete("/:returnId/items", (req, res) => {
     .catch(err => console.log(err));
 });
 
+const updateStock = item => {
+  ReturnStock.find({
+    id: item.id,
+    pkd: item.pkd,
+    mrp: item.mrp,
+    reason: item.reason
+  })
+    .then(result => {
+      console.log(result);
+      if (result.length == 1) {
+        console.log(1);
+        var newQty = parseInt(item.qty) + parseInt(result[0].qty);
+        console.log(newQty);
+        return ReturnStock.update(
+          { id: result[0].id, category: item.category },
+          { qty: newQty.toString() }
+        ).exec();
+      } else {
+        console.log(2);
+        console.log(item);
+        const returnStock = {
+          id: item.id,
+          name: item.name,
+          pkd: item.pkd,
+          mrp: item.mrp,
+          reason: item.reason,
+          qty: item.qty,
+          tur: (parseFloat(item.mrp) * 0.8).toString(),
+          weight: item.weight,
+          category: item.category,
+          type: "trade"
+        };
+        const newReturnStock = new ReturnStock(returnStock);
+        return newReturnStock
+          .save()
+          .then(res => {
+            console.log("updated");
+          })
+          .catch(err => console.log(err));
+      }
+    })
+    .then(result => console.log(result))
+    .catch(err => {
+      console.log(err);
+    });
+
+  return;
+};
+
 // @desc update status details of a particular returnId
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
   console.log(req.body.code);
@@ -254,6 +304,13 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
             description: "audited at RS",
             time: d
           };
+          Return.findOne({ returnId: req.params.returnId })
+            .then(result => {
+              console.log(result.items);
+              for (var i = 0; i < result.items.length; i++)
+                updateStock(result.items[i]);
+            })
+            .catch(err => console.log(err));
           // res.redirect("/api/returnStocks/hit", { items: req.body.items });
         } else {
           console.log(newStatus);
