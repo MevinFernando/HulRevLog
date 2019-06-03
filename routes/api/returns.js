@@ -111,7 +111,8 @@ router.post("/new", (req, res) => {
       tur: parseFloat(req.body.items[i].mrp) * 0.8,
       qty: req.body.items[i].quantity,
       weight: "100",
-      reason: req.body.items[i].reason
+      reason: req.body.items[i].reason,
+      category: req.body.items[i].category
     };
     // Product.findOne({ productId: req.body.items[i].productId })
     //   .then(result => {
