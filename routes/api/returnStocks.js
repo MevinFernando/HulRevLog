@@ -10,7 +10,19 @@ const Product = require("../../models/product.js");
 router.get("/", (req, res) => {
   ReturnStock.find()
     //  .select("id name category")
-    .then(returnStock => res.json({ items: returnStock }))
+    .then(returnStock => res.json(returnStock))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+// @route   GET api/returnStocks
+// @desc    Get All returnStocks
+// @access  Public
+router.get("/all", (req, res) => {
+  ReturnStock.find()
+    //  .select("id name category")
+    .then(returnStock => res.json([{ items: returnStock }]))
     .catch(err => {
       console.log(err);
     });
@@ -67,6 +79,35 @@ router.post("/", (req, res) => {
     .catch(err => {
       res.send(err);
     });
+});
+
+const insertStock = item => {
+  const returnStock = {
+    id: item.id,
+    name: item.name,
+    pkd: item.pkd,
+    mrp: item.mrp,
+    reason: item.reason,
+    qty: item.qty,
+    tur: (parseFloat(item.mrp) * 0.8).toString(),
+    weight: item.weight,
+    category: item.category,
+    type: "trade"
+  };
+  const newReturnStock = new ReturnStock(returnStock);
+  return newReturnStock
+    .save()
+    .then(res => {
+      console.log("inserted");
+    })
+    .catch(err => console.log(err));
+};
+
+// @route   POST api/returnStocks
+// @desc    Create An returnStock
+router.put("/insertStocks", (req, res) => {
+  for (var i = 0; i < req.body.items.length; i++)
+    insertStock(req.body.items[i]);
 });
 
 // @route   POST api/returnStocks
@@ -141,8 +182,8 @@ router.patch("/:id", (req, res) => {
 
 // @route   DELETE api/returnStocks/:id
 // @desc    Delete A returnStock
-router.delete("/:id", (req, res) => {
-  RS.findById(req.params.id)
+router.delete("/", (req, res) => {
+  ReturnStock.find({})
     .remove()
     .exec();
 });
