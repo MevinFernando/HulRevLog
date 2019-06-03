@@ -108,7 +108,7 @@ router.post("/new", (req, res) => {
       name: req.body.items[i].productName,
       pkd: req.body.items[i].pkd,
       mrp: req.body.items[i].mrp,
-      tur: parseFloat(req.body.items[i].mrp) * 0.8,
+      tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
       qty: req.body.items[i].quantity,
       weight: "100",
       reason: req.body.items[i].reason,
@@ -166,6 +166,21 @@ router.put("/:returnId/item/:name", (req, res) => {
       }
     }
   )
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+router.put("/:returnId/items", (req, res) => {
+  Return.update(
+    { returnId: req.params.returnId },
+    { $set: { items: req.body.items } }
+  )
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+router.delete("/:returnId/items", (req, res) => {
+  Return.update({ returnId: req.params.returnId }, { $set: { items: [] } })
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });

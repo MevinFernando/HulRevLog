@@ -4,7 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-//const cors = require('cors');
+//const cors = require("cors");
 
 const retailers = require("./routes/api/retailers");
 const products = require("./routes/api/products");
