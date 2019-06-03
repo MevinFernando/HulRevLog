@@ -10,7 +10,7 @@ const Product = require("../../models/product.js");
 router.get("/", (req, res) => {
   ReturnStock.find()
     //  .select("id name category")
-    .then(returnStock => res.json(returnStock))
+    .then(returnStock => res.json({ items: returnStock }))
     .catch(err => {
       console.log(err);
     });
