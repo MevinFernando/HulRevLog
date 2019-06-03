@@ -126,7 +126,7 @@ router.post("/new", (req, res) => {
   }
   returnObject.amount = amount;
   var newStatus = {
-    code: req.body.code,
+    code: req.body.code.toString(),
     description: "return requested",
     time: Date()
   };
