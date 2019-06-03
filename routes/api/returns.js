@@ -104,15 +104,15 @@ router.post("/new", (req, res) => {
 
   for (var i = 0; i < req.body.items.length; i++) {
     var item = {
-      id: req.body.items[i].productId,
-      name: req.body.items[i].productName,
-      pkd: req.body.items[i].pkd,
-      mrp: req.body.items[i].mrp,
+      id: req.body.items[i].productId.toString(),
+      name: req.body.items[i].productName.toString(),
+      pkd: req.body.items[i].pkd.toString(),
+      mrp: req.body.items[i].mrp.toString(),
       tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
-      qty: req.body.items[i].quantity,
+      qty: req.body.items[i].quantity.toString(),
       weight: "100",
-      reason: req.body.items[i].reason,
-      category: req.body.items[i].category
+      reason: req.body.items[i].reason.toString(),
+      category: req.body.items[i].category.toString()
     };
     // Product.findOne({ productId: req.body.items[i].productId })
     //   .then(result => {
