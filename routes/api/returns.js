@@ -237,6 +237,7 @@ const updateStock = item => {
 
 // @desc update status details of a particular returnId
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
+  console.log(req.body);
   console.log(req.body.code);
   console.log(req.file);
 
