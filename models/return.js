@@ -3,17 +3,20 @@ const Schema = mongoose.Schema;
 
 const ReturnSchema = new Schema({
   returnId: {
-    type: "String"
+    type: "String",
+    required: true
   },
   returnDate: {
     type: "String",
     default: Date()
   },
   retailerId: {
-    type: "String"
+    type: "String",
+    required: true
   },
   retailerName: {
-    type: "String"
+    type: "String",
+    required: true
   },
   items: {
     type: ["Mixed"]
@@ -22,16 +25,23 @@ const ReturnSchema = new Schema({
     type: ["Mixed"]
   },
   amount: {
-    type: "String"
+    type: "String",
+    required: true
   },
   salesPersonId: {
-    type: "String"
+    type: "String",
+    required: true
   },
   salesPersonName: {
-    type: "String"
+    type: "String",
+    required: true
   },
   category: {
     type: "String"
+  },
+  packages: {
+    type: "String",
+    required: true
   }
 });
 module.exports = Return = mongoose.model("return", ReturnSchema);

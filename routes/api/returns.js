@@ -37,6 +37,7 @@ const upload = multer({
 const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
 const Rule = require("../../models/rule.js");
+const Product = require("../../models/product.js");
 
 // @route   GET api/returns
 // @desc    Get  All Returns
@@ -81,6 +82,61 @@ router.post("/", (req, res) => {
     .save()
     .then(result => res.json(result))
 
+    .catch(err => console.log(err));
+});
+
+router.post("/new", (req, res) => {
+  console.log(req.body);
+
+  var amount = 0;
+  var returnObject = {
+    returnId: Math.floor(Math.random() * 1000000),
+    returnDate: Date(),
+    retailerId: req.body.retailerId,
+    retailerName: req.body.retailerName,
+    items: [],
+    status: [],
+    amount: 0,
+    salesPersonId: req.body.salesmanId,
+    salesPersonName: req.body.salesmanName,
+    packages: req.body.packages
+  };
+
+  for (var i = 0; i < req.body.items.length; i++) {
+    var item = {
+      id: req.body.items[i].productId,
+      name: req.body.items[i].productName,
+      pkd: req.body.items[i].pkd,
+      mrp: req.body.items[i].mrp,
+      tur: parseFloat(req.body.items[i].mrp) * 0.8,
+      qty: req.body.items[i].quantity,
+      weight: req.body.items[i].weight,
+      reason: req.body.items[i].reason
+    };
+    Product.findOne({ productId: req.body.items[i].productId })
+      .then(result => {
+        item.weight = result.weight;
+      })
+      .catch(err => console.log(err));
+
+    amount =
+      parseFloat(amount) +
+      parseFloat(item.tur) * parseFloat(req.body.items[i].quantity);
+    returnObject.items.push(item);
+  }
+  returnObject.amount = amount;
+  var newStatus = {
+    code: req.body.code,
+    description: "return requested",
+    time: Date()
+  };
+
+  returnObject.status.push(newStatus);
+
+  const newReturn = new Return(returnObject);
+  newReturn
+    .save()
+    .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
