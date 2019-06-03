@@ -212,11 +212,11 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
               .catch(err => console.log(err));
           });
         } else if (req.body.code == "30" || req.body.code == "31") {
-          if (req.file == undefined) {
-            console.log("hit 30");
-            //  console("no sign not found");
-            res.send("No sign Image sent");
-          }
+          // if (req.file == undefined) {
+          //   console.log("hit 30");
+          //   //  console("no sign not found");
+          //   res.send("No sign Image sent");
+          // }
           var newStatus = {
             code: req.body.code,
             description: "picked up",
