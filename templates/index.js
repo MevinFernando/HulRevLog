@@ -1,4 +1,4 @@
-module.exports = ({ rsId, items, initDate, qty, weight, value }) => {
+module.exports = ({ distributorDetails, claimDetails }) => {
   const today = new Date();
   return `
   <!doctype html>
@@ -39,11 +39,11 @@ module.exports = ({ rsId, items, initDate, qty, weight, value }) => {
            .invoice-box table tr.top table td {
            padding-bottom: 20px;
            }
-           .invoice-box table tr.top table td.title {
-           font-size: 45px;
-           line-height: 45px;
-           color: #333;
-           }
+         //   .invoice-box table tr.top table td.title {
+         //   font-size: 45px;
+         //   line-height: 45px;
+         //   color: #333;
+         //   }
            .invoice-box table tr.information table td {
            padding-bottom: 40px;
            }
@@ -88,10 +88,7 @@ module.exports = ({ rsId, items, initDate, qty, weight, value }) => {
                        <tr>
                           <td class="title"><img  src="https://seeklogo.com/images/U/Unilever-logo-C7995A25D2-seeklogo.com.png"
                              style="width:100%; max-width:156px;"></td>
-                          <td>
-                            Claim Date: ${`${today.getDate()}. ${today.getMonth() +
-                              1}. ${today.getFullYear()}.`}
-                          </td>
+                          
                        </tr>
                     </table>
                  </td>
@@ -100,34 +97,62 @@ module.exports = ({ rsId, items, initDate, qty, weight, value }) => {
                  <td colspan="2">
                     <table>
                        <tr>
-                          <td>
-                             RS Id: ${rsId}
-                          </td> 
+                          
+                            <td><b>RS Id:</b> ${
+                              distributorDetails.distributorId
+                            }</td> 
+                            <td><b> RS Name:</b>${distributorDetails.name}</td> 
+                            <td><b> RS PAN:</b> ${distributorDetails.pan}</td> 
+                            <td><b> Suplier Id:</b>${
+                              distributorDetails.supplierId
+                            }</td> 
+                            <td>
+                            Date: ${`${today.getDate()}. ${today.getMonth() +
+                              1}. ${today.getFullYear()}.`}
+                          </td>
                        </tr>
                     </table>
                  </td>
               </tr>
             <h4>Return Items</h4>
               <tr class="heading">
-                 <td>Id</td>
-                 <td>Name</td>
-                 <td>Quantity</td>
+                  <td>Id</td>
+                  <td>Name</td>
+                  <td>PKD</td>
+                  <td>QTY</td>
+                  <td>Weight(g)</td>
+                  <td>MRP</td>
+                  <td>TUR</td>
+                  <td>Reason</td>
+                  <td>Taxbl. Amt</td>
+                  <td>CGST(9%)</td>
+                  <td>SGST(9%)</td>
+                  <td>Tot.Amt</td>
               </tr>
-                  ${items.map(
-                    item =>
-                      `<tr class="item">
-                      <td>${item.id}</td>
-                      <td>${item.name}</td>
-                      <td>${item.qty}</td>
-                      </tr>`
-                  )}
-                  
+                      ${claimDetails.items.map(
+                        item =>
+                          `<tr class="details">
+                          <td>${item.id}</td>
+                          <td>${item.name}</td>
+                          <td>
+                            ${item.pkd.slice(4, 7)}/${item.pkd.slice(11, 16)}
+                          </td>
+                          <td>${item.qty}</td>
+                          <td>${item.weight}</td>
+                          <td>${item.mrp}</td>
+                          <td>${item.tur}</td>
+                          <td>${item.reason}</td>
+                          <td>${item.tot_tax_amt}</td>
+                          <td>${item.cgst}</td>
+                          <td>${item.sgst}</td>
+                          <td>${item.tot_amt}</td>
+                        </tr>`
+                      )}
            </table>
            <br />
-           <h4 class="justify-center">Net Quantity:${qty}
-           Net Weight:${weight}
-           Net Value: ${value}</h4>
-
+           <h4 class="justify-center">Net Quantity:${claimDetails.qty}</h4>
+           <h4 class="justify-center">Net Weight:${claimDetails.weight}</h4>
+           <h4 class="justify-center">Net Value: ${claimDetails.value}</h4>
         </div>
      </body>
   </html>

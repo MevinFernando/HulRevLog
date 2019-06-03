@@ -19,6 +19,9 @@ const RSReturnSchema = new Schema({
     type: "String",
     default: "NA"
   },
+  items: {
+    type: ["Mixed"]
+  },
   status: {
     type: "String",
     default: "NA"

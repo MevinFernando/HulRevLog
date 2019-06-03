@@ -182,7 +182,7 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
             description: "audited at RS",
             time: d
           };
-          res.redirect("/api/returnStocks/hit", { items: req.body.items });
+          // res.redirect("/api/returnStocks/hit", { items: req.body.items });
         } else {
           console.log(newStatus);
           console.log("hit else");

@@ -25,9 +25,19 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/returns", (req, res) => {
+router.get("/:rsId", (req, res) => {
   //res.send("distributor API");
-  RSReturn.find()
+  Distributor.findOne({ distributorId: req.params.rsId })
+    //  .select("id name category")
+    .then(distributors => res.json(distributors))
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+router.get("/claims/:rsId", (req, res) => {
+  //res.send("distributor API");
+  RSReturn.findOne({ rsId: req.params.rsId })
     //  .select("id name category")
     .then(returns => res.json(returns))
     .catch(err => {
@@ -45,67 +55,91 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.post("/return/new/:id", (req, res) => {
+router.get("/claims/new/:rsId", (req, res) => {
+  // id , name,pkd,qty,weight,mrp,tur,reason,tot taxable amt,cgst, sgst,tot amt
   var weight = 0;
   var value = 0;
   var damagedValue = 0;
   var qty = 0;
+
   ReturnStock.find()
     .then(stocks => {
       for (var i = 0; i < stocks.length; i++) {
         weight = weight + stocks[i].qty * stocks[i].weight;
-        value = value + stocks[i].qty * stocks[i].mrp;
+        stocks[i].tot_tax_amt =
+          parseFloat(stocks[i].tur) * parseFloat(stocks[i].qty);
+        stocks[i].cgst = parseFloat(stocks[i].tot_tax_amt) * 0.09;
+        stocks[i].sgst = parseFloat(stocks[i].tot_tax_amt) * 0.09;
+        stocks[i].tot_amt =
+          parseFloat(stocks[i].tot_tax_amt) +
+          parseFloat(stocks[i].cgst) +
+          parseFloat(stocks[i].sgst);
+        value = parseFloat(value) + parseFloat(stocks[i].tot_amt);
         if (stocks[i].reason === "damaged")
-          damagedValue = damagedValue + stocks[i].qty * stocks[i].mrp;
+          damagedValue =
+            parseFloat(damagedValue) + parseFloat(stocks[i].tot_amt);
         qty = qty + stocks[i].qty * 1;
         //console.log(weight);
       }
+      console.log(stocks);
       console.log(weight, value, qty);
-      var data = {
+      var claimDetails = {
         rsId: req.params.id,
         initDate: Date(),
-        status: "50",
+        status: "60",
         value: value,
         damagedValue: damagedValue,
         weight: weight,
         qty: qty,
-        items: []
+        items: stocks
       };
-      data.items = stocks;
-      console.log(data);
-      pdf
-        .create(pdfTemplate(data), {})
-        .toFile("./public/documents/claim-details.pdf", err => {
-          if (err) {
-            res.json(err);
-          }
-          functions.mailer();
-        });
 
-      res.send(Promise.resolve());
-
-      // const newRSReturn = new RSReturn({
-      //   rsId: req.params.id,
-      //   initDate: Date(),
-      //   status: "50",
-      //   value: value,
-      //   damagedValue: damagedValue,
-      //   weight: weight,
-      //   qty: qty
-      // });
-      // newRSReturn
-      //   .save()
-      //   //create and save PDF
-      //   // send email to RSM
-      //   //send PDF to Portal
-      //   .then(result => res.json(result))
-      //   .catch(err => console.log(err));
+      res.json(claimDetails);
     })
+    .catch(err => res.json(err));
+});
+
+router.post("/claims/new/:rsId", (req, res) => {
+  // Distributor.find({rsId:req.params.rsId})
+  // .then()
+  const distributorDetails = req.body.distributorDetails;
+  const claimDetails = req.body.claimDetails;
+  console.log(req.body);
+  pdf
+    .create(pdfTemplate(req.body), {})
+    .toFile(
+      "./public/documents/" + req.params.rsId + "claim-details.pdf",
+      err => {
+        if (err) {
+          res.json(err);
+        }
+        functions.mailer();
+      }
+    );
+  //res.send(Promise.resolve());
+  const newRSReturn = new RSReturn({
+    rsId: req.params.rsId,
+    initDate: Date(),
+    status: "50",
+    items: claimDetails.items,
+    value: claimDetails.value,
+    damagedValue: claimDetails.damagedValue,
+    weight: claimDetails.weight,
+    qty: claimDetails.qty
+  });
+  newRSReturn
+    .save()
+    //create and save PDF
+    // send email to RSM
+    //send PDF to Portal
+    .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
-router.get("/fetch-pdf", (req, res) => {
-  res.sendFile(__basedir + "/claim-details.pdf");
+router.get("/claim-pdf/:rsId", (req, res) => {
+  res.sendFile(
+    __basedir + "/public/documents/" + req.params.rsId + "claim-details.pdf"
+  );
 });
 
 router.get("/return/:rsId/status/:id", (req, res) => {

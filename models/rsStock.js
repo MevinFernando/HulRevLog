@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ReturnStockSchema = new Schema({
+const RSStockSchema = new Schema({
   id: {
     type: String,
     required: true
@@ -32,35 +32,12 @@ const ReturnStockSchema = new Schema({
   },
   tur: {
     type: String,
-    required: true
+    default: "others"
   },
   weight: {
     type: String,
     required: true
-  },
-  category: {
-    type: String,
-    required: true
-  },
-  cgst: {
-    type: String,
-    default: "NA"
-  },
-  sgst: {
-    type: String,
-    default: "NA"
-  },
-  tot_tax_amt: {
-    type: String,
-    default: "NA"
-  },
-  tot_amt: {
-    type: String,
-    default: "NA"
   }
 });
 
-module.exports = returnStock = mongoose.model(
-  "returnstocks",
-  ReturnStockSchema
-);
+module.exports = RSStock = mongoose.model("rsstock", RSStockSchema);
