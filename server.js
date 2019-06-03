@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
   res.send("API HOME PAGE");
 });
 
-app.get("/rizwan", (req, res) => {
+app.put("/rizwan", (req, res) => {
   console.log(req.body);
   res.send("Success");
 });
