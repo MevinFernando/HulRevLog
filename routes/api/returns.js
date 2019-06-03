@@ -110,14 +110,14 @@ router.post("/new", (req, res) => {
       mrp: req.body.items[i].mrp,
       tur: parseFloat(req.body.items[i].mrp) * 0.8,
       qty: req.body.items[i].quantity,
-      weight: req.body.items[i].weight,
+      weight: "100",
       reason: req.body.items[i].reason
     };
-    Product.findOne({ productId: req.body.items[i].productId })
-      .then(result => {
-        item.weight = result.weight;
-      })
-      .catch(err => console.log(err));
+    // Product.findOne({ productId: req.body.items[i].productId })
+    //   .then(result => {
+    //     //  item.weight = result.weight;
+    //   })
+    //   .catch(err => console.log(err));
 
     amount =
       parseFloat(amount) +
@@ -210,14 +210,14 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
               .then(pickup => console.log(pickup))
               .catch(err => console.log(err));
           });
-        } else if (req.body.code == "30") {
+        } else if (req.body.code == "30" || req.body.code == "31") {
           if (req.file == undefined) {
             console.log("hit 30");
             //  console("no sign not found");
             res.send("No sign Image sent");
           }
           var newStatus = {
-            code: "30",
+            code: req.body.code,
             description: "picked up",
             time: d,
             signatureImage: req.file.path
