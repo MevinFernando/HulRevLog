@@ -111,6 +111,9 @@ router.put("/insert", (req, res) => {
   console.log(req.body);
   for (var i = 0; i < req.body.items.length; i++)
     insertStock(req.body.items[i]);
+  res.json({
+    mesage: "success"
+  });
 });
 
 // @route   POST api/returnStocks
