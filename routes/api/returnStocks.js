@@ -88,19 +88,19 @@ const insertStock = item => {
 // @route   POST api/returnStocks
 // @desc    Create An returnStock
 router.put("/insert", (req, res) => {
-  console.log(req.body);
+  console.log(req.body.items);
   var returnStocks = [];
   for (var i = 0; i < req.body.items.length; i++) {
     const returnStock = {
-      id: items[i].id,
-      name: items[i].name,
-      pkd: items[i].pkd,
-      mrp: items[i].mrp,
-      reason: items[i].reason,
-      qty: items[i].qty,
-      tur: (parseFloat(items[i].mrp) * 0.8).toString(),
-      weight: items[i].weight,
-      category: items[i].category,
+      id: req.body.items[i].id,
+      name: req.body.items[i].name,
+      pkd: req.body.items[i].pkd,
+      mrp: req.body.items[i].mrp,
+      reason: req.body.items[i].reason,
+      qty: req.body.items[i].qty,
+      tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
+      weight: req.body.items[i].weight,
+      category: req.body.items[i].category,
       type: "trade"
     };
     returnStocks.push(returnStock);
