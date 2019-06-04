@@ -188,7 +188,9 @@ router.patch("/:id", (req, res) => {
 router.delete("/", (req, res) => {
   ReturnStock.find({})
     .remove()
-    .exec();
+    .exec()
+    .then(result => res.json(res))
+    .catch(err => res.json(err));
 });
 
 module.exports = router;
