@@ -82,26 +82,6 @@ router.post("/", (req, res) => {
 });
 
 const insertStock = item => {
-  const returnStock = {
-    id: item.id,
-    name: item.name,
-    pkd: item.pkd,
-    mrp: item.mrp,
-    reason: item.reason,
-    qty: item.qty,
-    tur: (parseFloat(item.mrp) * 0.8).toString(),
-    weight: item.weight,
-    category: item.category,
-    type: "trade"
-  };
-  const newReturnStock = new ReturnStock(returnStock);
-  return newReturnStock
-    .save()
-    .then(res => {
-      console.log("inserted");
-    })
-    .catch(err => console.log(err));
-
   return;
 };
 
@@ -109,10 +89,28 @@ const insertStock = item => {
 // @desc    Create An returnStock
 router.put("/insert", (req, res) => {
   console.log(req.body);
-  for (var i = 0; i < req.body.items.length; i++)
-    insertStock(req.body.items[i]);
-  res.json({
-    mesage: "success"
+  var returnStocks = [];
+  for (var i = 0; i < req.body.items.length; i++) {
+    const returnStock = {
+      id: items[i].id,
+      name: items[i].name,
+      pkd: items[i].pkd,
+      mrp: items[i].mrp,
+      reason: items[i].reason,
+      qty: items[i].qty,
+      tur: (parseFloat(items[i].mrp) * 0.8).toString(),
+      weight: items[i].weight,
+      category: items[i].category,
+      type: "trade"
+    };
+    returnStocks.push(returnStock);
+  }
+  ReturnStock.insertMany(returnStocks, (err, results) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json(results);
+    }
   });
 });
 
