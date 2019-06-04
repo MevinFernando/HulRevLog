@@ -262,7 +262,11 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
           };
           d = new Date();
           console.log(newStatus);
-          d.setDate(d.getDate() + 2);
+          if (req.body.no_days) {
+            d.setDate(d.getDate() + parseInt(no_days));
+          } else {
+            d.setDate(d.getDate() + 2);
+          }
           console.log(d.toString());
           d = d.toString();
           Return.findOne({ returnId: req.params.returnId }).then(result => {
@@ -270,7 +274,8 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
               returnId: req.params.returnId,
               pickupId: "1",
               retailerId: result.retailerId,
-              pickupDate: d
+              pickupDate: d,
+              packages: result.packages
             });
             newPickup
               .save()

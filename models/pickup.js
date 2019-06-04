@@ -18,6 +18,9 @@ const PickupSchema = new Schema({
   pickupDate: {
     type: String,
     required: true
+  },
+  packages: {
+    type: String
   }
 });
 
