@@ -1,6 +1,10 @@
 const nodemailer = require("nodemailer");
 const emailTemplate = require("../templates/mail");
 
+
+
+
+
 exports.mailer = () => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
@@ -33,3 +37,4 @@ exports.mailer = () => {
     }
   });
 };
+

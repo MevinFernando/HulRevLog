@@ -33,9 +33,9 @@ module.exports = ({ distributorDetails, claimDetails }) => {
            padding: 5px;
            vertical-align: top;
            }
-           .invoice-box table tr td:nth-child(2) {
-           text-align: right;
-           }
+         //   .invoice-box table tr td:nth-child(2) {
+         //   text-align: right;
+         //   }
            .invoice-box table tr.top table td {
            padding-bottom: 20px;
            }

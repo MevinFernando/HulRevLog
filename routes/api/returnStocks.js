@@ -105,7 +105,8 @@ const insertStock = item => {
 
 // @route   POST api/returnStocks
 // @desc    Create An returnStock
-router.put("/insertStocks", (req, res) => {
+router.put("/insert", (req, res) => {
+  console.log(req.body);
   for (var i = 0; i < req.body.items.length; i++)
     insertStock(req.body.items[i]);
 });
