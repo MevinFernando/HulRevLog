@@ -101,6 +101,8 @@ const insertStock = item => {
       console.log("inserted");
     })
     .catch(err => console.log(err));
+
+  return;
 };
 
 // @route   POST api/returnStocks
