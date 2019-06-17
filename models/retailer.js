@@ -24,8 +24,7 @@ const RetailerSchema = new Schema({
     required: true
   },
   category: {
-    type: String,
-    required: true
+    type: String
   },
   salesPersonId: {
     type: String,

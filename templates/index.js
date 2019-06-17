@@ -1,4 +1,4 @@
-module.exports = ({ distributorDetails, claimDetails }) => {
+module.exports = data => {
   const today = new Date();
   return `
   <!doctype html>
@@ -98,14 +98,10 @@ module.exports = ({ distributorDetails, claimDetails }) => {
                     <table>
                        <tr>
                           
-                            <td><b>RS Id:</b> ${
-                              distributorDetails.distributorId
-                            }</td> 
-                            <td><b> RS Name:</b>${distributorDetails.name}</td> 
-                            <td><b> RS PAN:</b> ${distributorDetails.pan}</td> 
-                            <td><b> Suplier Id:</b>${
-                              distributorDetails.supplierId
-                            }</td> 
+                            <td><b>RS Id:</b> ${data.rsId}</td> 
+                            <td><b> RS Name:</b>${data.name}</td> 
+                            <td><b> RS PAN:</b> ${data.pan}</td> 
+                            <td><b> Suplier Id:</b>${data.supplierId}</td> 
                             <td>
                             Date: ${`${today.getDate()}. ${today.getMonth() +
                               1}. ${today.getFullYear()}.`}
@@ -129,13 +125,13 @@ module.exports = ({ distributorDetails, claimDetails }) => {
                   <td>SGST(9%)</td>
                   <td>Tot.Amt</td>
               </tr>
-                      ${claimDetails.items.map(
+                      ${data.items.map(
                         item =>
                           `<tr class="details">
                           <td>${item.id}</td>
                           <td>${item.name}</td>
                           <td>
-                            ${item.pkd.slice(4, 7)}/${item.pkd.slice(11, 16)}
+                            ${item.pkd}
                           </td>
                           <td>${item.qty}</td>
                           <td>${item.weight}</td>
@@ -150,9 +146,9 @@ module.exports = ({ distributorDetails, claimDetails }) => {
                       )}
            </table>
            <br />
-           <h4 class="justify-center">Net Quantity:${claimDetails.qty}</h4>
-           <h4 class="justify-center">Net Weight:${claimDetails.weight}</h4>
-           <h4 class="justify-center">Net Value: ${claimDetails.value}</h4>
+           <h4 class="justify-center">Net Quantity:${data.qty}</h4>
+           <h4 class="justify-center">Net Weight:${data.weight}</h4>
+           <h4 class="justify-center">Net Value: ${data.value}</h4>
         </div>
      </body>
   </html>

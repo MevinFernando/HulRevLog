@@ -7,9 +7,27 @@ const Retailer = require("../../models/retailer.js");
 // @desc    Get All Retailers
 // @access  Public
 router.get("/", (req, res) => {
-  //res.send("Retailer API");
   Retailer.find()
     //  .select("id name category")
+    .then(retailers => res.json(retailers))
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+router.get("/:retailerId", (req, res) => {
+  Retailer.findOne({ id: req.params.retailerId })
+    //  .select("id name category")
+    .then(result => {
+      res.json(result);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+router.get("/salesperson/:salesPersonId", (req, res) => {
+  Retailer.find({ salesPersonId: req.params.salesPersonId })
     .then(retailers => res.json(retailers))
     .catch(err => {
       console.log(err);
@@ -19,12 +37,6 @@ router.get("/", (req, res) => {
 // @route   POST api/retailers
 // @desc    Create An Retailers
 router.post("/", (req, res) => {
-  //console.log(req.body);
-  // const newRetailer = new Retailer({
-  //   id: req.body.id,
-  //   name: req.body.name
-  // });
-
   const newRetailer = new Retailer(req.body);
 
   newRetailer
@@ -33,16 +45,8 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.patch("/:id", (req, res) => {
-  const id = req.params.id;
-
-  // const updateOps = {};
-  // console.log(req.body);
-  // for (const ops of req.body) {
-  //   updateOps[ops.propName] = ops.value;
-  // }
-  Retailer.update({ id: req.params.id }, req.body)
-    .exec()
+router.put("/:retailerId", (req, res) => {
+  Retailer.update({ id: req.params.retailerId }, req.body)
     .then(result => {
       console.log(result);
       res.status(200).json(result);
@@ -57,10 +61,11 @@ router.patch("/:id", (req, res) => {
 
 // @route   DELETE api/retailers/:id
 // @desc    Delete A Retailer
-router.delete("/:id", (req, res) => {
-  Retailer.findById(req.params.id)
+router.delete("/:retailerId", (req, res) => {
+  Retailer.find({ id: req.params.retailerId })
     .remove()
-    .exec();
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
 });
 
 module.exports = router;

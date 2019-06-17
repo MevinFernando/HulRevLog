@@ -28,12 +28,13 @@ module.exports = rsId => {
       </div>
       <div class="row" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; max-width: 50%; display: inline-block; padding: 10px;">
         <div class="col" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-          <button class="btn-primary" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; padding: 10px; border-radius: 5px; background: #2233ff;">
-            <a class="linkstyle" href="http://localhost:5000/api/distributors/return/123456/status/60" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; text-decoration: none; color: #fff;">Accept</a>
+          
+        <button  class="btn-primary" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; padding: 10px; border-radius: 5px; background: #2233ff;">
+            <a class="linkstyle" href="http://localhost:5000/api/claims/123456/status/70" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; text-decoration: none; color: #fff;">Accept</a>
           </button>
         
-          <button class="btn-danger" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; padding: 10px; border-radius: 5px; background: #ff3322;">
-            <a class="linkstyle" href="http://localhost:5000/api/distributors/return/123456/status/61" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; text-decoration: none; color: #fff;">Reject</a>
+          <button  class="btn-danger" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; padding: 10px; border-radius: 5px; background: #ff3322;">
+            <a class="linkstyle" href="http://localhost:5000/api/claims/123456/status/71" style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; text-decoration: none; color: #fff;">Reject</a>
           </button>
           </div>
         </div>

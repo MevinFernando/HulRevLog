@@ -12,12 +12,10 @@ router.get("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get("/retailers/:salesPersonId", (req, res) => {
-  Retailer.find({ salesPersonId: req.params.salesPersonId })
-    .then(retailers => res.json(retailers))
-    .catch(err => {
-      console.log(err);
-    });
+router.get("/:salespersonId", (req, res) => {
+  SalesPerson.find({ salesPersonId: req.params.salesPersonId })
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
 });
 
 // @route   POST api/salesPersons
@@ -31,4 +29,29 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.put("/:salesPersonId", (req, res) => {
+  SalesPerson.update({ salesPersonId: req.params.salesPersonId }, req.body)
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+
+router.delete("/:salesPersonId", (req, res) => {
+  //console.log(req.body);
+  const newSalesPerson = new SalesPerson(req.body);
+  newSalesPerson
+    .find({ salesPersonId: req.params.salesPersonId })
+    .remove()
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
 module.exports = router;

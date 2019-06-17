@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const RSReturnSchema = new Schema({
+const ClaimSchema = new Schema({
   rsId: {
     type: "String",
     required: true
   },
   auditorId: {
     type: "String",
+    required: true,
     default: "NA"
   },
   initDate: {
@@ -17,6 +18,12 @@ const RSReturnSchema = new Schema({
   },
   approvalDate: {
     type: "String",
+    required: true,
+    default: "NA"
+  },
+  auditDate: {
+    type: "String",
+    required: true,
     default: "NA"
   },
   items: {
@@ -43,4 +50,4 @@ const RSReturnSchema = new Schema({
     required: true
   }
 });
-module.exports = RSReturn = mongoose.model("rsreturn", RSReturnSchema);
+module.exports = Claim = mongoose.model("claim", ClaimSchema);

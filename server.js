@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 //const cors = require("cors");
 
-
 const retailers = require("./routes/api/retailers");
 const products = require("./routes/api/products");
 const returns = require("./routes/api/returns");
@@ -16,6 +15,8 @@ const salesPersons = require("./routes/api/salesPersons");
 const returnStocks = require("./routes/api/returnStocks");
 const rsStocks = require("./routes/api/rsStocks");
 const distributors = require("./routes/api/distributors");
+const rules = require("./routes/api/rules");
+const claims = require("./routes/api/claims");
 
 const app = express();
 
@@ -56,6 +57,8 @@ app.use("/api/salesPersons", salesPersons);
 app.use("/api/returnStocks", returnStocks);
 app.use("/api/distributors", distributors);
 app.use("/api/rsStocks", rsStocks);
+app.use("/api/rules", rules);
+app.use("/api/claims", claims);
 
 app.get("/", (req, res) => {
   res.send("API HOME PAGE");

@@ -1,11 +1,7 @@
 const nodemailer = require("nodemailer");
 const emailTemplate = require("../templates/mail");
 
-
-
-
-
-exports.mailer = () => {
+exports.mailer = rsId => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -19,11 +15,11 @@ exports.mailer = () => {
     to: "mfmevins@gmail.com",
     subject: "Distributor Claim Details",
     text: "Verify PDF and Approve or Reject Claim",
-    html: emailTemplate(123456),
+    html: emailTemplate(rsId),
     attachments: [
       {
-        filename: "claim-details.pdf",
-        path: "public/documents/claim-details.pdf",
+        filename: rsId + "_claim-details.pdf",
+        path: "public/documents/" + rsId + "_claim-details.pdf",
         contentType: "application/pdf"
       }
     ]
@@ -37,4 +33,3 @@ exports.mailer = () => {
     }
   });
 };
-

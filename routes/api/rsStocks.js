@@ -94,7 +94,9 @@ router.patch("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   RS.findById(req.params.id)
     .remove()
-    .exec();
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
 });
 
 module.exports = router;

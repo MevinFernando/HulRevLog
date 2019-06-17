@@ -20,7 +20,8 @@ const PickupSchema = new Schema({
     required: true
   },
   packages: {
-    type: String
+    type: String,
+    required: true
   }
 });
 

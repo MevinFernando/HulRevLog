@@ -36,7 +36,6 @@ const upload = multer({
 
 const Return = require("../../models/return.js");
 const Pickup = require("../../models/pickup.js");
-const Rule = require("../../models/rule.js");
 const Product = require("../../models/product.js");
 const ReturnStock = require("../../models/returnStock.js");
 
@@ -44,13 +43,7 @@ const ReturnStock = require("../../models/returnStock.js");
 // @desc    Get  All Returns
 // @access  Public
 router.get("/", (req, res) => {
-  Return.find({})
-    .then(result => res.json(result))
-    .catch(err => console.log(err));
-});
-
-router.get("/rules", (req, res) => {
-  Rule.find({})
+  Return.find()
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -58,7 +51,7 @@ router.get("/rules", (req, res) => {
 // @route   GET api/returns/returnId
 // @desc    Get Return details for returnId
 router.get("/:returnId", (req, res) => {
-  Return.find({ returnId: req.params.returnId })
+  Return.findOne({ returnId: req.params.returnId })
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -155,9 +148,14 @@ router.put("/:returnId", (req, res) => {
 
 //@route PUT  api/returns/:returnId/item/:name
 //@desc update item details of a particular returnId
-router.put("/:returnId/item/:name", (req, res) => {
+router.put("/:returnId/item/:itemId", (req, res) => {
+  Return.findOne({
+    returnId: req.params.returnId,
+    "items.id": req.params.itemId
+  });
+
   Return.update(
-    { returnId: req.params.returnId, "items.name": req.params.name },
+    { returnId: req.params.returnId, "items.id": req.params.itemId },
     {
       $set: {
         "items.$.mrp": req.body.mrp,
@@ -174,14 +172,8 @@ router.put("/:returnId/item/:name", (req, res) => {
 router.put("/:returnId/items", (req, res) => {
   Return.update(
     { returnId: req.params.returnId },
-    { $set: { items: req.body.items } }
+    { $set: { items: req.body } }
   )
-    .then(result => res.json(result))
-    .catch(err => console.log(err));
-});
-
-router.delete("/:returnId/items", (req, res) => {
-  Return.update({ returnId: req.params.returnId }, { $set: { items: [] } })
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
@@ -198,7 +190,9 @@ const updateStock = item => {
       if (result.length == 1) {
         console.log(1);
         var newQty = parseInt(item.qty) + parseInt(result[0].qty);
+
         console.log(newQty);
+
         return ReturnStock.update(
           { id: result[0].id, category: item.category },
           { qty: newQty.toString() }
@@ -206,6 +200,7 @@ const updateStock = item => {
       } else {
         console.log(2);
         console.log(item);
+
         const returnStock = {
           id: item.id,
           name: item.name,
@@ -238,21 +233,20 @@ const updateStock = item => {
 // @desc update status details of a particular returnId
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
   console.log(req.body);
-  console.log(req.body.code);
   console.log(req.file);
 
   var currentStatusCode = 0;
+
   Return.findOne({ returnId: req.params.returnId })
     .then(ret => {
       //console.log(ret);
       currentStatusCode = ret.status[0].code;
 
-      if (req.body.code - currentStatusCode != 10)
+      if (req.body.code - currentStatusCode > 15)
         res.status(500).send({
           error: "Wrong Status code Sent"
         });
       else {
-        //res.send("correct status update");
         var d = Date();
         if (req.body.code == "20") {
           var newStatus = {
@@ -262,13 +256,17 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
           };
           d = new Date();
           console.log(newStatus);
-          if (req.body.no_days) {
-            d.setDate(d.getDate() + parseInt(no_days));
-          } else {
-            d.setDate(d.getDate() + 2);
-          }
+          console.log(req.body.no_days);
+          // if (req.body.no_days > 0) {
+          //   console.log("custom");
+          // d.setDate(d.getDate() + parseInt(no_days));
+          // } else {
+          //   console.log("regular");
+          d.setDate(d.getDate() + 2);
+          // }
           console.log(d.toString());
           d = d.toString();
+          console.log("custom");
           Return.findOne({ returnId: req.params.returnId }).then(result => {
             const newPickup = new Pickup({
               returnId: req.params.returnId,
@@ -295,6 +293,16 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
             signatureImage: req.file.path
           };
           console.log(newStatus);
+        } else if (req.body.code == "32") {
+          var newStatus = {
+            code: "32",
+            description: req.body.description,
+            time: d,
+            packages: req.body.packages
+          };
+          Pickup.findOneAndDelete({ returnId: req.params.returnId })
+            .then(console.log("successfully removed pickup"))
+            .catch(err => res.status(404).json({ success: false }));
         } else if (req.body.code == "40") {
           var newStatus = {
             code: "40",
@@ -317,7 +325,6 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
                 updateStock(result.items[i]);
             })
             .catch(err => console.log(err));
-          // res.redirect("/api/returnStocks/hit", { items: req.body.items });
         } else {
           console.log(newStatus);
           console.log("hit else");
@@ -354,16 +361,41 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
     );
 });
 
-router.post("/rule", (req, res) => {
-  const newRule = new Rule(req.body);
-  newRule
-    .save()
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
+// @route   DELETE
+// @desc    Delete A Return
+router.delete("/:returnId", (req, res) => {
+  Return.findOneAndDelete({ returnId: req.params.returnId })
+    .then(res.json({ success: true }))
+    .catch(err => res.status(404).json({ success: false }));
+});
+
+router.delete("/:returnId/items", (req, res) => {
+  Return.update({ returnId: req.params.returnId }, { $set: { items: [] } })
+    .exec()
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
-//---------------------------------------------------------------------------------------------------------//
-//---------------------------------------------------------------------------------------------------------//
+router.delete("/:returnId/items/:itemId", (req, res) => {
+  Return.update(
+    { returnId: req.params.returnId },
+    { $pull: { items: { id: req.params.itemId } } },
+    { safe: true }
+  )
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+router.delete("/:returnId/status", (req, res) => {
+  Return.update({ returnId: req.params.returnId }, { $set: { status: [] } })
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
 
 // @route   DELETE
 // @desc    Delete A Status item from array
@@ -373,16 +405,9 @@ router.delete("/:returnId/status/:code", (req, res) => {
     { $pull: { status: { code: req.params.code } } },
     { safe: true }
   )
+    .exec()
     .then(result => res.json(result))
     .catch(err => console.log(err));
-});
-
-// @route   DELETE
-// @desc    Delete A Return
-router.delete("/:returnId", (req, res) => {
-  Return.findOneAndDelete({ returnId: req.params.returnId })
-    .then(res.json({ success: true }))
-    .catch(err => res.status(404).json({ success: false }));
 });
 
 module.exports = router;
