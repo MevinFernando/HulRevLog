@@ -178,28 +178,29 @@ router.put("/:returnId/items", (req, res) => {
     .catch(err => console.log(err));
 });
 
-const updateStock = item => {
-  ReturnStock.find({
+const updateStock = async function(item) {
+  console.log("in func");
+  await ReturnStock.find({
     id: item.id,
     pkd: item.pkd,
     mrp: item.mrp,
     reason: item.reason
   })
     .then(result => {
-      console.log(result);
+      ///console.log(result);
       if (result.length == 1) {
-        console.log(1);
+        //console.log(1);
         var newQty = parseInt(item.qty) + parseInt(result[0].qty);
 
-        console.log(newQty);
+        //console.log(newQty);
 
         return ReturnStock.update(
           { id: result[0].id, category: item.category },
           { qty: newQty.toString() }
         ).exec();
       } else {
-        console.log(2);
-        console.log(item);
+        //console.log(2);
+        //console.log(item);
 
         const returnStock = {
           id: item.id,
@@ -217,7 +218,7 @@ const updateStock = item => {
         return newReturnStock
           .save()
           .then(res => {
-            console.log("updated");
+            //  console.log("updated");
           })
           .catch(err => console.log(err));
       }
@@ -321,8 +322,10 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
           Return.findOne({ returnId: req.params.returnId })
             .then(result => {
               console.log(result.items);
-              for (var i = 0; i < result.items.length; i++)
+              for (var i = 0; i < result.items.length; i++) {
                 updateStock(result.items[i]);
+                console.log("after update");
+              }
             })
             .catch(err => console.log(err));
         } else {

@@ -16,22 +16,22 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-  ReturnStock.findOne({ id: req.params.id })
-    //  .select("id name category")
-    .then(returnStock => res.json(returnStock))
-    .catch(err => {
-      console.log(err);
-    });
-});
-
 // @route   GET api/returnStocks
 // @desc    Get All returnStocks
 // @access  Public
 router.get("/all", (req, res) => {
   ReturnStock.find()
-    //  .select("id name category")
     .then(returnStock => res.json([{ items: returnStock }])) //made for eshwars app
+    //.then(returnStock => res.json(returnStock)) //made for eshwars app
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+router.get("/:id", (req, res) => {
+  ReturnStock.findOne({ id: req.params.id })
+    //  .select("id name category")
+    .then(returnStock => res.json(returnStock))
     .catch(err => {
       console.log(err);
     });

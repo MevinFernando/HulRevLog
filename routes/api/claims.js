@@ -156,38 +156,43 @@ router.post("/:rsId/generate", (req, res) => {
 });
 
 router.get("/:rsId/status/:id", (req, res) => {
-  if (req.params.id == "70") {
-    //schedule audit and update status
-    Claim.update(
-      { rsId: req.params.rsId },
-      { status: req.params.id, auditorId: "A123", approvalDate: Date() }
-    )
-      .then(result => {
-        res.send("response recorded");
-      })
-      .catch(err => {
-        res.send(err);
+  Claim.findOne({ rsId: req.params.rsId }).then(result => {
+    if (result == null) {
+      res.status(404).json({
+        error: "no claim found"
       });
-  }
-
-  if (req.params.id == "80") {
-    //schedule audit and update status
-    Claim.update(
-      { rsId: req.params.rsId },
-      {
-        $set: { items: req.body },
-        status: req.params.id,
-        auditorId: "A123",
-        auditDate: Date()
-      }
-    )
-      .then(result => {
-        res.json({ message: "Response Recorded" });
-      })
-      .catch(err => {
-        res.send(err);
-      });
-  }
+    } else if (result.status == "60" && req.params.id == "70") {
+      //schedule audit and update status
+      Claim.update(
+        { rsId: req.params.rsId },
+        { status: req.params.id, auditorId: "A123", approvalDate: Date() }
+      )
+        .then(result => {
+          res.send("response recorded");
+          //functions.auditMailer(auditorId);
+        })
+        .catch(err => {
+          res.send(err);
+        });
+    } else if (result.status == "70" && req.params.id == "80") {
+      //schedule audit and update status
+      Claim.update(
+        { rsId: req.params.rsId },
+        {
+          $set: { items: req.body },
+          status: req.params.id,
+          auditorId: "A123",
+          auditDate: Date()
+        }
+      )
+        .then(result => {
+          res.json({ message: "Response Recorded" });
+        })
+        .catch(err => {
+          res.send(err);
+        });
+    }
+  });
 });
 
 router.put("/:rsId", (req, res) => {
