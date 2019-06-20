@@ -172,7 +172,7 @@ router.put("/:returnId/item/:itemId", (req, res) => {
 router.put("/:returnId/items", (req, res) => {
   Return.update(
     { returnId: req.params.returnId },
-    { $set: { items: req.body } }
+    { $set: { items: req.body.items } }
   )
     .then(result => res.json(result))
     .catch(err => console.log(err));
