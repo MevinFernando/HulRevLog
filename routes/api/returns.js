@@ -56,6 +56,16 @@ router.get("/:returnId", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   GET api/returns/returnId
+// @desc    Get Return details for returnId
+router.get("/status/:code", (req, res) => {
+  Return.find({
+    "status.0.code": req.params.code
+  })
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+});
+
 // @route   GET api/returns/retailer/:retailerId
 // @desc    Get Return details for retailerId
 router.get("/retailer/:retailerId", (req, res) => {
