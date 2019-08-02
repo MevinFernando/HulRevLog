@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 var xml = require("xml");
 const multer = require("multer");
-
+const functions = require("../../controllers/functions");
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, "./public/uploads/");
@@ -48,27 +48,26 @@ router.get("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-// @route   GET api/returns/returnId
-// @desc    Get Return details for returnId
+// @route   GET api/returns/:returnId
+// @desc    Get  A Return
 router.get("/:returnId", (req, res) => {
   Return.findOne({ returnId: req.params.returnId })
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
-// @route   GET api/returns/returnId
-// @desc    Get Return details for returnId
-router.get("/status/:code/:salesPersonId", (req, res) => {
+// @route   GET api/returns/:returnId/status/:code
+// @desc    Get Returns of Particular Status
+router.get("/:returnId/status/:code/", (req, res) => {
   Return.find({
-    "status.0.code": req.params.code,
-    salesPersonId: req.params.salesPersonId
+    "status.0.code": req.params.code
   })
     .then(result => res.json(result))
     .catch(err => res.json(err));
 });
 
 // @route   GET api/returns/returnId
-// @desc    Get Return details for returnId
+// @desc    Get Return History For Of A Salesperson
 router.get("/history/:salesPersonId", (req, res) => {
   Return.find({
     salesPersonId: req.params.salesPersonId
@@ -100,14 +99,18 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   POST api/returns/new
+// @desc    Create A Return  {Only For Salesperson App}
 router.post("/new", upload.single("signatureImage"), (req, res) => {
   console.log(req.body);
-  console.log(req.file);
+  console.log(req.file); //Contains Retailer Signature Image
 
   var amount = 0;
   var returnObject = {
     returnId: Math.floor(Math.random() * 1000000).toString(),
-    returnDate: Date(),
+    returnDate: Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata"
+    }),
     retailerId: req.body.retailerId.toString(),
     retailerName: req.body.retailerName.toString(),
     items: [],
@@ -146,7 +149,9 @@ router.post("/new", upload.single("signatureImage"), (req, res) => {
     code: req.body.code.toString(),
     description: "return requested",
     //signatureImage: req.file.path,
-    time: Date()
+    time: Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata"
+    })
   };
 
   returnObject.status.push(newStatus);
@@ -161,7 +166,7 @@ router.post("/new", upload.single("signatureImage"), (req, res) => {
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-//@route PUT
+//@route PUT api/returns/:returnId
 //@desc update  return details for a returnId except status as items list
 router.put("/:returnId", (req, res) => {
   Return.update({ returnId: req.params.returnId }, req.body)
@@ -169,7 +174,7 @@ router.put("/:returnId", (req, res) => {
     .catch(err => console.log(err));
 });
 
-//@route PUT  api/returns/:returnId/item/:name
+//@route PUT  api/returns/:returnId/item/:itemId
 //@desc update item details of a particular returnId
 router.put("/:returnId/item/:itemId", (req, res) => {
   Return.findOne({
@@ -191,16 +196,19 @@ router.put("/:returnId/item/:itemId", (req, res) => {
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
-
+//@route PUT  api/returns/:returnId/items
+//@desc Set Entire Item Array
 router.put("/:returnId/items", (req, res) => {
+  var amount = functions.calcAmount(req.body.items);
   Return.update(
     { returnId: req.params.returnId },
-    { $set: { items: req.body.items } }
+    { $set: { items: req.body.items }, amount: amount }
   )
     .then(result => res.json(result))
     .catch(err => console.log(err));
 });
 
+//update returnStock on Completing RS Audit
 const updateStock = async function(item) {
   console.log("in func");
   await ReturnStock.find({
@@ -273,14 +281,18 @@ router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
           error: "Wrong Status code Sent"
         });
       else {
-        var d = Date();
+        var d = Date().toLocaleString("en-US", {
+          timeZone: "Asia/Kolkata"
+        });
         if (req.body.code == "20") {
           var newStatus = {
             code: "20",
             description: "scheduled for pickup",
             time: d
           };
-          d = new Date();
+          d = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Kolkata"
+          });
           console.log(newStatus);
           console.log(req.body.no_days);
           // if (req.body.no_days > 0) {
@@ -399,7 +411,8 @@ router.delete("/:returnId", (req, res) => {
     .then(res.json({ success: true }))
     .catch(err => res.status(404).json({ success: false }));
 });
-
+// @route   DELETE
+// @desc    Delete All Items of A Return
 router.delete("/:returnId/items", (req, res) => {
   Return.update({ returnId: req.params.returnId }, { $set: { items: [] } })
     .exec()
@@ -407,6 +420,8 @@ router.delete("/:returnId/items", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   DELETE
+// @desc    Delete A Particular Item by id
 router.delete("/:returnId/items/:itemId", (req, res) => {
   Return.update(
     { returnId: req.params.returnId },
@@ -418,6 +433,8 @@ router.delete("/:returnId/items/:itemId", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   DELETE api/returns/:returnId/status
+// @desc    Delete All Status
 router.delete("/:returnId/status", (req, res) => {
   Return.update({ returnId: req.params.returnId }, { $set: { status: [] } })
     .exec()
@@ -426,7 +443,7 @@ router.delete("/:returnId/status", (req, res) => {
 });
 
 // @route   DELETE
-// @desc    Delete A Status item from array
+// @desc    Delete A Status  from array
 router.delete("/:returnId/status/:code", (req, res) => {
   Return.update(
     { returnId: req.params.returnId },

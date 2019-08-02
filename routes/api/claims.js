@@ -1,17 +1,15 @@
 const express = require("express");
 const router = express.Router();
-
 const pdf = require("html-pdf");
-
 const Claim = require("../../models/claim");
 const ReturnStock = require("../../models/returnStock.js");
-
 const pdfTemplate = require("../../templates/index");
 const functions = require("../../controllers/functions");
+const Return = require("../../models/return.js");
 
 router.get("/", (req, res) => {
   Claim.find()
-    //  .select("id name category")
+    //  .select("code name category")
     .then(claims => res.json(claims))
     .catch(err => {
       console.log(err);
@@ -37,6 +35,19 @@ router.get("/:rsId", (req, res) => {
     });
 });
 
+router.get("/audit/:rsId/:code", (req, res) => {
+  //res.send("distributor API");
+  Claim.findOne({ rsId: req.params.rsId })
+    .then(claim => {
+      if (claim.code == req.params.code) {
+        res.json(claim);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 router.get("/:rsId/pdf", (req, res) => {
   res.sendFile(
     __basedir + "/public/documents/" + req.params.rsId + "_claim-details.pdf"
@@ -45,7 +56,6 @@ router.get("/:rsId/pdf", (req, res) => {
 
 router.get("/:rsId/generate", (req, res) => {
   //console.log("claim generate");
-
   // id , name,pkd,qty,weight,mrp,tur,reason,tot taxable amt,cgst, sgst,tot amt
   var weight = 0;
   var value = 0;
@@ -74,13 +84,13 @@ router.get("/:rsId/generate", (req, res) => {
         qty = qty + stocks[i].qty * 1;
         //console.log(stocks[i]);
       }
-
       //console.log(stocks);
       //console.log(weight, value, qty);
-
       const claimDetails = {
         rsId: req.params.rsId,
-        initDate: Date(),
+        initDate: Date().toLocaleString("en-US", {
+          timeZone: "Asia/Kolkata"
+        }),
         status: "60",
         value: value.toFixed(2).toString(),
         damagedValue: damagedValue,
@@ -117,18 +127,14 @@ router.post("/:rsId/generate", (req, res) => {
 
         value = parseInt(value) + parseInt(stocks[i].tot_amt);
         var reason = stocks[i].reason;
-        // if (reason.slice(0, 5) === "Damage")
-        //   damagedValue = parseInt(damagedValue) + parseInt(stocks[i].tot_amt);
         qty = qty + stocks[i].qty * 1;
         //console.log(stocks[i]);
       }
-
-      //console.log(stocks);
-      //console.log(weight, value, qty);
-
       const claimDetails = {
         rsId: req.params.rsId,
-        initDate: Date(),
+        initDate: Date().toLocaleString("en-US", {
+          timeZone: "Asia/Kolkata"
+        }),
         status: "60",
         value: value.toFixed(2).toString(),
         damagedValue: damagedValue,
@@ -155,52 +161,74 @@ router.post("/:rsId/generate", (req, res) => {
     .catch(err => res.json(err));
 });
 
-router.get("/:rsId/status/:id", (req, res) => {
-  Claim.findOne({ rsId: req.params.rsId }).then(result => {
-    if (result == null) {
-      res.status(404).json({
-        error: "no claim found"
-      });
-    } else if (result.status == "60" && req.params.id == "70") {
-      //schedule audit and update status
-
-      var code = Math.floor(Math.random() * 10000).toString();
-      Claim.update(
-        { rsId: req.params.rsId },
-        {
-          status: req.params.id,
-          auditorId: "A123",
-          approvalDate: Date(),
-          code: code
-        }
-      )
-        .then(result => {
-          functions.auditMailer(rsId, code);
-          res.send("response recorded");
-        })
-        .catch(err => {
-          res.send(err);
+router.put("/:rsId/status/:code", (req, res) => {
+  Claim.findOne({ rsId: req.params.rsId })
+    .then(result => {
+      console.log("result", result);
+      if (result == null) {
+        res.status(404).json({
+          error: "no claim found"
         });
-    } else if (result.status == "70" && req.params.id == "80") {
-      //schedule audit and update status
+      } else if (result.status == "60" && req.params.code == "70") {
+        //schedule audit and update status
+        console.log("approved claim");
+        var code = Math.floor(Math.random() * 100000).toString();
+        Claim.updateOne(
+          { rsId: req.params.rsId },
+          {
+            status: req.params.code,
+            auditorId: "A123",
+            approvalDate: Date().toLocaleString("en-US", {
+              timeZone: "Asia/Kolkata"
+            }),
+            code: code
+          }
+        )
+          .then(result => {
+            //deleting Approved Returns and ReturnStocks after Claim Approval
 
-      Claim.update(
-        { rsId: req.params.rsId },
-        {
-          $set: { items: req.body },
-          status: req.params.id,
-          auditorId: "A123",
-          auditDate: Date()
-        }
-      )
-        .then(result => {
-          res.json({ message: "Audited" });
-        })
-        .catch(err => {
-          res.send(err);
-        });
-    }
-  });
+            Return.find({ "status.0.code": "50" })
+              .remove()
+              .exec();
+            ReturnStock.find()
+              .remove()
+              .exec();
+
+            functions.auditMailer(req.params.rsId, code);
+            console.log("Mail with " + code + "sent to Auditor");
+            res.send("approved claim and mail sent to auditor");
+          })
+          .catch(err => {
+            res.send("update error");
+          });
+      } else if (result.status == "70" && req.params.code == "80") {
+        //schedule audit and update status
+        var value = functions.calcAmount(req.body);
+        Claim.update(
+          { rsId: req.params.rsId },
+          {
+            $set: { items: req.body },
+            status: req.params.code,
+            auditorId: "A123",
+            value: value,
+            auditDate: Date().toLocaleString("en-US", {
+              timeZone: "Asia/Kolkata"
+            })
+          }
+        )
+          .then(result => {
+            res.json({ message: "Audited" });
+          })
+          .catch(err => {
+            res.send(err);
+          });
+      } else {
+        res.json({ error: "No matching status" });
+      }
+    })
+    .catch(err => {
+      res.send("Error in finding claim");
+    });
 });
 
 router.put("/:rsId", (req, res) => {

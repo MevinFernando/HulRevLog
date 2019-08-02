@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 });
 
 // @route   GET api/returnStocks
-// @desc    Get All returnStocks
+// @desc    Get All returnStocks  {only used by Auditor}
 // @access  Public
 router.get("/all", (req, res) => {
   ReturnStock.find()
@@ -28,6 +28,9 @@ router.get("/all", (req, res) => {
     });
 });
 
+// @route   GET api/returnStocks/:id
+// @desc    Get A returnStock
+// @access  Public
 router.get("/:id", (req, res) => {
   ReturnStock.findOne({ id: req.params.id })
     //  .select("id name category")
@@ -40,7 +43,7 @@ router.get("/:id", (req, res) => {
 //-----------------------------------------------------------------------------------------------------------------
 
 // @route   POST api/returnStocks
-// @desc    Create An returnStock
+// @desc    add items array to returnStocks
 router.post("/", (req, res) => {
   var returnStocks = [];
   for (var i = 0; i < req.body[i].length; i++) {
@@ -142,7 +145,7 @@ router.put("/:id", (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------
 
-// @route   DELETE api/returnStocks/:id
+// @route   DELETE api/returnStocks
 // @desc    Delete All returnStocks
 router.delete("/", (req, res) => {
   ReturnStock.find()
@@ -152,6 +155,8 @@ router.delete("/", (req, res) => {
     .catch(err => res.json(err));
 });
 
+// @route   DELETE api/returnStocks/:id
+// @desc    Delete A particular ReturnStock
 router.delete("/:id", (req, res) => {
   ReturnStock.find({ id: req.params.id })
     .remove()

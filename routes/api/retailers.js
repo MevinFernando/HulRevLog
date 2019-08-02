@@ -8,16 +8,17 @@ const Retailer = require("../../models/retailer.js");
 // @access  Public
 router.get("/", (req, res) => {
   Retailer.find()
-    //  .select("id name category")
     .then(retailers => res.json(retailers))
     .catch(err => {
       res.json(err);
     });
 });
 
+// @route   GET api/retailes/:retailerId
+// @desc    Get A Retailer
+// @access  Public
 router.get("/:retailerId", (req, res) => {
   Retailer.findOne({ id: req.params.retailerId })
-    //  .select("id name category")
     .then(result => {
       res.json(result);
     })
@@ -26,6 +27,9 @@ router.get("/:retailerId", (req, res) => {
     });
 });
 
+// @route   GET api/retailers/:retailerId
+// @desc    Get Retailers of a SalesPerson
+// @access  Public
 router.get("/salesperson/:salesPersonId", (req, res) => {
   Retailer.find({ salesPersonId: req.params.salesPersonId })
     .then(retailers => res.json(retailers))
@@ -45,6 +49,8 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
+// @route   PUT api/retailers/retailerId
+// @desc    Edit A Retailer
 router.put("/:retailerId", (req, res) => {
   Retailer.update({ id: req.params.retailerId }, req.body)
     .then(result => {
@@ -64,6 +70,16 @@ router.put("/:retailerId", (req, res) => {
 router.delete("/:retailerId", (req, res) => {
   Retailer.find({ id: req.params.retailerId })
     .remove()
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+});
+
+// @route   DELETE api/retailers
+// @desc    Delete All Retailers
+router.delete("/", (req, res) => {
+  Claim.find()
+    .remove()
+    .exec()
     .then(result => res.json(result))
     .catch(err => res.json(err));
 });

@@ -35,7 +35,7 @@ exports.mailer = rsId => {
   });
 };
 
-exports.auditMailer = auditorId => {
+exports.auditMailer = (rsId, code) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -49,14 +49,14 @@ exports.auditMailer = auditorId => {
     to: "mfmevins@gmail.com",
     subject: "Audit Details",
     text: "Audit Schedule Update",
-    html: auditorTemplate(),
-    attachments: [
-      // {
-      //   filename: rsId + "_claim-details.pdf",
-      //   path: "public/documents/" + rsId + "_claim-details.pdf",
-      //   contentType: "application/pdf"
-      // }
-    ]
+    html: auditorTemplate(rsId, code)
+    //attachments: [
+    // {
+    //   filename: rsId + "_claim-details.pdf",
+    //   path: "public/documents/" + rsId + "_claim-details.pdf",
+    //   contentType: "application/pdf"
+    // }
+    //]
   };
 
   return transporter.sendMail(mailOptions, function(error, info) {
@@ -66,4 +66,15 @@ exports.auditMailer = auditorId => {
       console.log(info.response);
     }
   });
+};
+
+exports.calcAmount = items => {
+  var amount = 0;
+  for (var i = 0; i < items.length; i++) {
+    amount =
+      parseFloat(amount) +
+      parseFloat(items[i].tur) * parseFloat(items[i].quantity);
+  }
+
+  return amount;
 };
