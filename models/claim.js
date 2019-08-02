@@ -33,6 +33,10 @@ const ClaimSchema = new Schema({
     type: "String",
     default: "NA"
   },
+  code: {
+    type: "String",
+    default: "NA"
+  },
   value: {
     type: "String",
     required: true

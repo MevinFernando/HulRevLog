@@ -48,7 +48,7 @@ exports.auditMailer = auditorId => {
     from: "mfmevins@gmail.com",
     to: "mfmevins@gmail.com",
     subject: "Audit Details",
-    text: "Audit Schedule Updated",
+    text: "Audit Schedule Update",
     html: auditorTemplate(),
     attachments: [
       // {

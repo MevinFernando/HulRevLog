@@ -58,9 +58,20 @@ router.get("/:returnId", (req, res) => {
 
 // @route   GET api/returns/returnId
 // @desc    Get Return details for returnId
-router.get("/status/:code", (req, res) => {
+router.get("/status/:code/:salesPersonId", (req, res) => {
   Return.find({
-    "status.0.code": req.params.code
+    "status.0.code": req.params.code,
+    salesPersonId: req.params.salesPersonId
+  })
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+});
+
+// @route   GET api/returns/returnId
+// @desc    Get Return details for returnId
+router.get("/history/:salesPersonId", (req, res) => {
+  Return.find({
+    salesPersonId: req.params.salesPersonId
   })
     .then(result => res.json(result))
     .catch(err => res.json(err));
@@ -89,8 +100,9 @@ router.post("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.post("/new", (req, res) => {
+router.post("/new", upload.single("signatureImage"), (req, res) => {
   console.log(req.body);
+  console.log(req.file);
 
   var amount = 0;
   var returnObject = {
@@ -133,6 +145,7 @@ router.post("/new", (req, res) => {
   var newStatus = {
     code: req.body.code.toString(),
     description: "return requested",
+    //signatureImage: req.file.path,
     time: Date()
   };
 
@@ -149,7 +162,7 @@ router.post("/new", (req, res) => {
 //---------------------------------------------------------------------------------------------------------//
 
 //@route PUT
-//@desc update  return details for a returnId except status ans items list
+//@desc update  return details for a returnId except status as items list
 router.put("/:returnId", (req, res) => {
   Return.update({ returnId: req.params.returnId }, req.body)
     .then(result => res.json(result))
@@ -243,17 +256,19 @@ const updateStock = async function(item) {
 
 // @desc update status details of a particular returnId
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-
+  //console.log(req.body);
+  //console.log(req.file);
+  //res.send(req.file);
   var currentStatusCode = 0;
 
   Return.findOne({ returnId: req.params.returnId })
     .then(ret => {
-      //console.log(ret);
       currentStatusCode = ret.status[0].code;
 
-      if (req.body.code - currentStatusCode > 15)
+      if (
+        req.body.code - currentStatusCode > 15 ||
+        req.body.code == currentStatusCode
+      )
         res.status(500).send({
           error: "Wrong Status code Sent"
         });

@@ -12,7 +12,7 @@ const functions = require("../../controllers/functions");
 router.get("/", (req, res) => {
   Claim.find()
     //  .select("id name category")
-    .then(returns => res.json(returns))
+    .then(claims => res.json(claims))
     .catch(err => {
       console.log(err);
     });
@@ -163,19 +163,27 @@ router.get("/:rsId/status/:id", (req, res) => {
       });
     } else if (result.status == "60" && req.params.id == "70") {
       //schedule audit and update status
+
+      var code = Math.floor(Math.random() * 10000).toString();
       Claim.update(
         { rsId: req.params.rsId },
-        { status: req.params.id, auditorId: "A123", approvalDate: Date() }
+        {
+          status: req.params.id,
+          auditorId: "A123",
+          approvalDate: Date(),
+          code: code
+        }
       )
         .then(result => {
+          functions.auditMailer(rsId, code);
           res.send("response recorded");
-          //functions.auditMailer(auditorId);
         })
         .catch(err => {
           res.send(err);
         });
     } else if (result.status == "70" && req.params.id == "80") {
       //schedule audit and update status
+
       Claim.update(
         { rsId: req.params.rsId },
         {
@@ -186,7 +194,7 @@ router.get("/:rsId/status/:id", (req, res) => {
         }
       )
         .then(result => {
-          res.json({ message: "Response Recorded" });
+          res.json({ message: "Audited" });
         })
         .catch(err => {
           res.send(err);

@@ -35,7 +35,7 @@ router.get("/salesperson/:salesPersonId", (req, res) => {
 });
 
 // @route   POST api/retailers
-// @desc    Create An Retailers
+// @desc    Create A Retailer
 router.post("/", (req, res) => {
   const newRetailer = new Retailer(req.body);
 

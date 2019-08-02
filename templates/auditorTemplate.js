@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = (rsId, code) => {
   return `
   <html style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif;"></html>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ module.exports = () => {
         <div class="col  " style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
           <h3 style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif; padding: 10px;">Return Request</h3>
           <p style="border: 0px; margin: 0px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-            Audit Schedule Has Been updated for this month.
+            Audit Scheduled For RS:${rsId}. Please use CODE-${code} to begin audit at RS Point.
           </p>
         </div>
       </div>
