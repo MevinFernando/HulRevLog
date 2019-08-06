@@ -128,6 +128,35 @@ router.put("/insert", (req, res) => {
   });
 });
 
+// @route   POST api/returnStocks
+// @desc    Create An returnStock
+router.put("/insertrsstock", (req, res) => {
+  console.log(req.body);
+  var returnStocks = [];
+  for (var i = 0; i < req.body.items.length; i++) {
+    const returnStock = {
+      id: req.body.items[i].id,
+      name: req.body.items[i].name,
+      pkd: req.body.items[i].pkd,
+      mrp: req.body.items[i].mrp,
+      reason: req.body.items[i].reason,
+      qty: req.body.items[i].qty,
+      tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
+      weight: req.body.items[i].weight,
+      category: req.body.items[i].category,
+      type: "rs"
+    };
+    returnStocks.push(returnStock);
+  }
+  ReturnStock.insertMany(returnStocks, (err, results) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 router.put("/:id", (req, res) => {
   ReturnStock.update({ id: req.params.id }, req.body)
     .exec()

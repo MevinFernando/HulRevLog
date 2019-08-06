@@ -72,9 +72,18 @@ exports.calcAmount = items => {
   var amount = 0;
   for (var i = 0; i < items.length; i++) {
     amount =
-      parseFloat(amount) +
-      parseFloat(items[i].tur) * parseFloat(items[i].quantity);
+      parseFloat(amount) + parseFloat(items[i].tur) * parseFloat(items[i].qty);
   }
 
   return amount;
+};
+
+exports.calcValue = items => {
+  var value = 0;
+  for (var i = 0; i < items.length; i++) {
+    value =
+      parseFloat(value) + parseFloat(items[i].tur) * parseFloat(items[i].qty);
+  }
+
+  return value;
 };

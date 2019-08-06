@@ -129,7 +129,7 @@ router.post("/new", upload.single("signatureImage"), (req, res) => {
       mrp: req.body.items[i].mrp.toString(),
       tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
       qty: req.body.items[i].quantity.toString(),
-      weight: "100",
+      weight: req.body.items[i].weight.toString(),
       reason: req.body.items[i].reason.toString(),
       category: req.body.items[i].category.toString()
     };
@@ -266,7 +266,6 @@ const updateStock = async function(item) {
 router.put("/:returnId/status", upload.single("signatureImage"), (req, res) => {
   //console.log(req.body);
   //console.log(req.file);
-  //res.send(req.file);
   var currentStatusCode = 0;
 
   Return.findOne({ returnId: req.params.returnId })

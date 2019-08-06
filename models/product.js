@@ -23,6 +23,10 @@ const ProductSchema = new Schema({
     type: String,
     required: true
   },
+  pkgType: {
+    type: String,
+    required: true
+  },
   life: {
     type: String
   }

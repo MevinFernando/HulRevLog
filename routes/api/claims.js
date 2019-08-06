@@ -37,14 +37,14 @@ router.get("/:rsId", (req, res) => {
 
 router.get("/audit/:rsId/:code", (req, res) => {
   //res.send("distributor API");
-  Claim.findOne({ rsId: req.params.rsId })
+  Claim.findOne({ rsId: req.params.rsId, code: req.params.code })
     .then(claim => {
       if (claim.code == req.params.code) {
         res.json(claim);
       }
     })
     .catch(err => {
-      console.log(err);
+      res.json({ error: "code/rsId incorrect" });
     });
 });
 
@@ -111,54 +111,64 @@ router.post("/:rsId/generate", (req, res) => {
   var damagedValue = 0;
   var qty = 0;
 
-  ReturnStock.find()
-    .then(stocks => {
-      for (var i = 0; i < stocks.length; i++) {
-        weight = weight + stocks[i].qty * stocks[i].weight;
-        stocks[i].tot_tax_amt =
-          parseInt(stocks[i].tur) * parseInt(stocks[i].qty);
-        stocks[i].cgst = stocks[i].tot_tax_amt * 0.1;
-        stocks[i].sgst = stocks[i].tot_tax_amt * 0.1;
-        stocks[i].tot_amt =
-          parseInt(stocks[i].tot_tax_amt) +
-          parseInt(stocks[i].cgst) +
-          parseInt(stocks[i].sgst);
-        stocks[i].tot_amt = stocks[i].tot_amt;
+  Claim.find({ rsId: req.params.rsId })
+    .then(result => {
+      if (result.length == 0) {
+        ReturnStock.find()
+          .then(stocks => {
+            for (var i = 0; i < stocks.length; i++) {
+              weight = weight + stocks[i].qty * stocks[i].weight;
+              stocks[i].tot_tax_amt =
+                parseInt(stocks[i].tur) * parseInt(stocks[i].qty);
+              stocks[i].cgst = stocks[i].tot_tax_amt * 0.1;
+              stocks[i].sgst = stocks[i].tot_tax_amt * 0.1;
+              stocks[i].tot_amt =
+                parseInt(stocks[i].tot_tax_amt) +
+                parseInt(stocks[i].cgst) +
+                parseInt(stocks[i].sgst);
+              stocks[i].tot_amt = stocks[i].tot_amt;
 
-        value = parseInt(value) + parseInt(stocks[i].tot_amt);
-        var reason = stocks[i].reason;
-        qty = qty + stocks[i].qty * 1;
-        //console.log(stocks[i]);
-      }
-      const claimDetails = {
-        rsId: req.params.rsId,
-        initDate: Date().toLocaleString("en-US", {
-          timeZone: "Asia/Kolkata"
-        }),
-        status: "60",
-        value: value.toFixed(2).toString(),
-        damagedValue: damagedValue,
-        weight: weight,
-        qty: qty,
-        items: stocks
-      };
-      const newClaim = new Claim(claimDetails);
-      newClaim.save().then(result => {
-        pdf
-          .create(pdfTemplate(result), {})
-          .toFile(
-            "./public/documents/" + req.params.rsId + "_claim-details.pdf",
-            err => {
-              if (err) {
-                res.json(err);
-              }
-              functions.mailer(req.params.rsId);
+              value = parseInt(value) + parseInt(stocks[i].tot_amt);
+              var reason = stocks[i].reason;
+              qty = qty + stocks[i].qty * 1;
+              //console.log(stocks[i]);
             }
-          );
-        res.json(result);
-      });
+            const claimDetails = {
+              rsId: req.params.rsId,
+              initDate: Date().toLocaleString("en-US", {
+                timeZone: "Asia/Kolkata"
+              }),
+              status: "60",
+              value: value.toFixed(2).toString(),
+              damagedValue: damagedValue,
+              weight: weight,
+              qty: qty,
+              items: stocks
+            };
+            const newClaim = new Claim(claimDetails);
+            newClaim.save().then(result => {
+              pdf
+                .create(pdfTemplate(result), {})
+                .toFile(
+                  "./public/documents/" +
+                    req.params.rsId +
+                    "_claim-details.pdf",
+                  err => {
+                    if (err) {
+                      res.json(err);
+                    }
+                    functions.mailer(req.params.rsId);
+                  }
+                );
+              res.json(result);
+            });
+          })
+          .catch(err => res.json(err));
+      }
     })
-    .catch(err => res.json(err));
+    .catch(err => {
+      res.json({ error: "cant claim" });
+    });
 });
 
 router.put("/:rsId/status/:code", (req, res) => {
@@ -242,6 +252,27 @@ router.put("/:rsId", (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
+});
+
+//@route PUT  api/returns/:returnId/items
+//@desc Set Entire Item Array
+router.put("/:rsId/items", (req, res) => {
+  var value = functions.calcValue(req.body.items);
+  Claim.update(
+    { rsId: req.params.rsId },
+    { $set: { items: req.body.items }, value: value }
+  )
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+});
+
+// @route   DELETE
+// @desc    Delete All Items of A Return
+router.delete("/:rsId/items", (req, res) => {
+  Claim.update({ rsId: req.params.rsId }, { $set: { items: [] } })
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
 });
 
 router.delete("/:rsId", (req, res) => {
