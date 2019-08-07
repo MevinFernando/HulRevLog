@@ -123,8 +123,8 @@ router.post('/new', upload.single('signatureImage'), (req, res) => {
 
   for (var i = 0; i < req.body.items.length; i++) {
     var item = {
-      id: req.body.items[i].productId.toString(),
-      name: req.body.items[i].productName.toString(),
+      id: req.body.items[i].id.toString(),
+      name: req.body.items[i].name.toString(),
       pkd: req.body.items[i].pkd.toString(),
       mrp: req.body.items[i].mrp.toString(),
       tur: (parseFloat(req.body.items[i].mrp) * 0.8).toString(),
