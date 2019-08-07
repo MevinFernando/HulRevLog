@@ -148,7 +148,7 @@ router.post('/new', upload.single('signatureImage'), (req, res) => {
   var newStatus = {
     code: req.body.code.toString(),
     description: 'return requested',
-    signatureImage: req.file.path,
+    //signatureImage: req.file.path,
     time: Date().toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata'
     })
