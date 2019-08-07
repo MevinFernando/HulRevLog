@@ -141,14 +141,14 @@ router.post('/new', upload.single('signatureImage'), (req, res) => {
 
     amount =
       parseFloat(amount) +
-      parseFloat(item.tur) * parseFloat(req.body.items[i].quantity);
+      parseFloat(item.tur) * parseFloat(req.body.items[i].qty);
     returnObject.items.push(item);
   }
   returnObject.amount = amount.toString();
   var newStatus = {
     code: req.body.code.toString(),
     description: 'return requested',
-    //signatureImage: req.file.path,
+    signatureImage: req.file.path,
     time: Date().toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata'
     })
@@ -160,7 +160,10 @@ router.post('/new', upload.single('signatureImage'), (req, res) => {
   newReturn
     .save()
     .then(result => res.json(result))
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: err });
+    });
 });
 
 //---------------------------------------------------------------------------------------------------------//
